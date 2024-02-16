@@ -10,7 +10,7 @@ from datetime import datetime
 st.sidebar.title('Ferramentas')
 st.sidebar.markdown('---')
 
-st.image('/home/vinicio/Dropbox/Fortem/GitHub/harpa/harpa2.jpg', width=250)
+#st.image('/home/vinicio/Dropbox/Fortem/GitHub/harpa/harpa2.jpg', width=250)
 st.title('Harpa Quant')
 st.text('Estudos quantitativos para auxiliar a tomada de decisão de investidores.')
 st.markdown('---')

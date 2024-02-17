@@ -12,6 +12,7 @@ from scipy.stats import norm
 from scipy.optimize import newton
 
 st.markdown("# Harpa Quant")
+st.write('Ferramentas quantitativas para o investidor prospectivo.')
 st.markdown("[![Twitter](https://img.shields.io/badge/Twitter-%231DA1F2.svg?style=for-the-badge&logo=Twitter&logoColor=white)](https://twitter.com/harpaquant)")
 st.markdown("[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://www.instagram.com/harpaquant)")
 
@@ -25,17 +26,23 @@ st.sidebar.markdown("""
 
 st.sidebar.markdown('---')
 
+#selected_calculator = st.sidebar.selectbox(
+#    "Selecione a ferramenta:",
+#    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Put Call Ratio - PCR", "Cones de Volatilidade")
+#)
+
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Put Call Ratio - PCR", "Cones de Volatilidade")
+    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções")
 )
+
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('Calculadoras Black-Scholes-Merton \n\n- Preço da opção\n\n- Volatilidade implícita')
 st.sidebar.write('Calculadora de Gregas de Opções')
-st.sidebar.write('Put Call Ratio - PCR')
-st.sidebar.write('Cones de Volatilidade')
+#st.sidebar.write('Put Call Ratio - PCR')
+#st.sidebar.write('Cones de Volatilidade')
 
 if selected_calculator == "Calculadoras Black-Scholes-Merton":
     
@@ -60,12 +67,9 @@ if selected_calculator == "Calculadoras Black-Scholes-Merton":
     # Título do aplicativo
     st.subheader('Calculadora Black-Scholes-Merton - Preço da opção')
     st.markdown("""
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit.
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
+    Black, Scholes e Merton revolucionaram a análise de opções, fornecendo um arcabouço robusto 
+                para entender e precificar riscos financeiros. Sua influência perdura, moldando 
+                a maneira como investidores e instituições lidam com a complexidade dos mercados. 
     """)
     # Organizando os campos de entrada em duas colunas
     col1, col2 = st.columns(2)
@@ -114,12 +118,10 @@ if selected_calculator == "Calculadoras Black-Scholes-Merton":
     # Título do aplicativo
     st.subheader('Calculadora Black-Scholes-Merton - Volatilidade implícita')
     st.markdown("""
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit.
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-    Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
+    A volatilidade implícita, elemento-chave no modelo Black-Scholes, reflete as expectativas 
+                do mercado sobre a flutuação futura dos preços de ativos. Sua análise é crucial 
+                para precificar opções e compreender as percepções dos investidores em relação 
+                ao risco. 
     """)
     # Organizando os campos de entrada em duas colunas
     col1, col2 = st.columns(2)
@@ -196,12 +198,9 @@ elif selected_calculator == "Calculadora de Gregas de Opções":
     # Título do aplicativo
     st.subheader('Calculadora de Gregas de Opções')
     st.markdown("""
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit.
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
+        As 'Gregas', na análise de derivativos, referem-se a medidas de sensibilidade de preço 
+                de opções a diferentes variáveis, como volatilidade, tempo e  movimento do preço 
+                do ativo subjacente. Delta, Gamma, Vega, Theta e Rho são alguns exemplos essenciais. 
         """)
     # Organizando os campos de entrada em duas colunas
     col1, col2 = st.columns(2)
@@ -224,30 +223,30 @@ elif selected_calculator == "Calculadora de Gregas de Opções":
         st.write("Theta:", round(theta(S, K, T, r, sigma, option_type),6))
         st.write("Rho:", round(rho(S, K, T, r, sigma, option_type),6))
 
-elif selected_calculator == "Put Call Ratio - PCR":
-    # Evolução de Put Call Ratio
+#elif selected_calculator == "Put Call Ratio - PCR":
+#    # Evolução de Put Call Ratio
+#
+#    # Título do aplicativo
+#    st.subheader('Put Call Ratio - PCR')
+#    st.markdown("""
+#        O Put Call Ratio - PCR é um indicador utilizado para avaliar o sentimento 
+#                do mercado em relação às opções. Ele compara o volume de negociação 
+#                de opções de venda com o volume de negociação de opções de compra, 
+#                oferecendo insights sobre as expectativas dos investidores. 
+#        """)
+    
 
-    # Título do aplicativo
-    st.subheader('Put Call Ratio - PCR')
-    st.markdown("""
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit.
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        """)
 
-elif selected_calculator == "Cones de Volatilidade":
-    # Evolução de Put Call Ratio
-
-    # Título do aplicativo
-    st.subheader('Cones de Volatilidade')
-    st.markdown("""
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit.
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-        """)
+#elif selected_calculator == "Cones de Volatilidade":
+#    # Evolução de Put Call Ratio
+#
+#    # Título do aplicativo
+#    st.subheader('Cones de Volatilidade')
+#    st.markdown("""
+#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
+#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
+#        Este é um exemplo de bloco de texto usando Markdown no Streamlit.
+#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
+#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
+#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
+#        """)

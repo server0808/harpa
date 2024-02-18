@@ -11,13 +11,29 @@ import math
 from scipy import stats
 from scipy.stats import norm
 from scipy.optimize import newton
+from openpyxl import Workbook, load_workbook
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
 st.markdown("""Escolha à esquerda a ferramenta.""")
 
-st.markdown("[![Twitter](https://img.shields.io/badge/Twitter-%231DA1F2.svg?style=for-the-badge&logo=Twitter&logoColor=white)](https://twitter.com/harpaquant)")
-st.markdown("[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://www.instagram.com/harpaquant)")
+col1, col2, col3, col4, col5 = st.columns(5)
+
+# Adicionar conteúdo em cada coluna
+with col1:
+    st.markdown("[![Twitter](https://img.shields.io/badge/Twitter-%231DA1F2.svg?style=for-the-badge&logo=Twitter&logoColor=white)](https://twitter.com/harpaquant)")
+
+with col2:
+    st.markdown("[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://www.instagram.com/harpaquant)")
+
+with col3:
+    st.markdown("")
+
+with col4:
+    st.markdown("")
+
+with col5:
+    st.markdown("")
 
 st.markdown('---')
 
@@ -30,14 +46,15 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Cones de Volatilidade")
+    ( "PCR - Put Call Ratio", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton")
 )
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
-st.sidebar.write('Calculadoras Black-Scholes-Merton \n\n- Preço da opção\n\n- Volatilidade implícita')
-st.sidebar.write('Calculadora de Gregas de Opções')
+st.sidebar.write('PCR - Put Call Ratio')
 st.sidebar.write('Cones de Volatilidade')
+st.sidebar.write('Calculadora de Gregas de Opções \n\n- Delta, Gamma, Vega, Theta, Rho ')
+st.sidebar.write('Calculadoras Black-Scholes-Merton \n\n- Preço da opção\n\n- Volatilidade implícita')
 
 ###########################
 ### BLACK-SCHOLES
@@ -69,6 +86,7 @@ if selected_calculator == "Calculadoras Black-Scholes-Merton":
                 para entender e precificar riscos financeiros. Sua influência perdura, moldando 
                 a maneira como investidores e instituições lidam com a complexidade dos mercados. 
     """)
+    st.markdown('---')
     # Organizando os campos de entrada em duas colunas
     col1, col2 = st.columns(2)
 
@@ -203,6 +221,7 @@ elif selected_calculator == "Calculadora de Gregas de Opções":
                 de opções a diferentes variáveis, como volatilidade, tempo e  movimento do preço 
                 do ativo subjacente. Delta, Gamma, Vega, Theta e Rho são alguns exemplos essenciais. 
         """)
+    st.markdown('---')
     # Organizando os campos de entrada em duas colunas
     col1, col2 = st.columns(2)
 
@@ -237,7 +256,7 @@ elif selected_calculator == "Cones de Volatilidade":
                 Os cones de volatilidade podem ajudar nessa análise. Veja abaixo gráficos do cone de
                 volatilidade para diferentes ativos subjacentes.
         """)
-
+    st.markdown('---')
     acaocone = st.radio('Escolha o ativo subjacente', ['ABEV3','BBDC4','BOVA11','PETR4','VALE3'])    
     windows = [15, 30, 45, 60, 75, 90, 105, 120]
     quantiles = [0.25, 0.75]
@@ -295,34 +314,88 @@ elif selected_calculator == "Cones de Volatilidade":
     fig = go.Figure(data=data, layout=layout)
     st.plotly_chart(fig)
 
-#    # create the plots on the chart
-#    plt.plot(windows, min_, "-o", linewidth=1, label="Min")
-#    plt.plot(windows, max_, "-o", linewidth=1, label="Max")
-#    plt.plot(windows, median, "-o", linewidth=1, label="Mediana")
-#    plt.plot(windows, top_q, "-o", linewidth=1, label=f"{quantiles[1] * 100:.0f} Prctl")
-#    plt.plot(windows, bottom_q, "-o", linewidth=1, label=f"{quantiles[0] * 100:.0f} Prctl")
-#    plt.plot(windows, realized, "ro-.", linewidth=1, label="Realizado")
-#    # set the x-axis labels
-#    plt.xticks(windows)
-#    # format the legend
-#    plt.legend(loc="upper center", bbox_to_anchor=(0.5, 1), ncol=3)
-#    plt.title(f'Cone de Volatilidade - {ativo_sem_extensao}')
-#    plt.xlabel('Janelas')
-
-#    ativo_sem_extensao = ativo_do_dia.rstrip('.SA')
-
-
-
-
-#elif selected_calculator == "Put Call Ratio - PCR":
-#    # Título do aplicativo
-#    st.subheader('Put Call Ratio - PCR')
-#    st.markdown("""
-#        O Put Call Ratio - PCR é um indicador utilizado para avaliar o sentimento 
-#                do mercado em relação às opções. Ele compara o volume de negociação 
-#                de opções de venda com o volume de negociação de opções de compra, 
-#                oferecendo insights sobre as expectativas dos investidores. 
-#        """)
+###########################
+### PCR - PUT CALL RATIO
     
+elif selected_calculator == "PCR - Put Call Ratio":
+    # Título do aplicativo
+    st.subheader('Put Call Ratio - PCR')
+    st.markdown("""
+        O Put Call Ratio - PCR é um indicador utilizado para avaliar o sentimento 
+                do mercado em relação às opções. Ele compara o volume de negociação 
+                de opções de venda com o volume de negociação de opções de compra, 
+                oferecendo insights sobre as expectativas dos investidores.
+                Alta do PCR pode sinalizar pessimismo em relação ao preço do ativo subjacente.
+                Queda do PCR pode sinalizar otimismo em relação ao preço do ativo subjacente. 
+        """)
+    st.markdown('---')
+    
+    # Carregar as planilhas
+    workbook_abev = load_workbook(filename='pcrabev.xlsx')
+    sheet_abev = workbook_abev.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
+    total_rows_abev = sheet_abev.max_row
+    ultn_abev = sheet_abev.cell(row=total_rows_abev, column=2).value
+    ultv_abev = sheet_abev.cell(row=total_rows_abev, column=3).value
+    
+    workbook_bbdc = load_workbook(filename='pcrbbdc.xlsx')
+    sheet_bbdc = workbook_bbdc.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
+    total_rows_bbdc = sheet_bbdc.max_row
+    ultn_bbdc = sheet_bbdc.cell(row=total_rows_bbdc, column=2).value
+    ultv_bbdc = sheet_bbdc.cell(row=total_rows_bbdc, column=3).value
+    
+    workbook_bova = load_workbook(filename='pcrbova.xlsx')
+    sheet_bova = workbook_bova.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
+    total_rows_bova = sheet_bova.max_row
+    ultn_bova = sheet_bova.cell(row=total_rows_bova, column=2).value
+    ultv_bova = sheet_bova.cell(row=total_rows_bova, column=3).value
 
+    workbook_petr = load_workbook(filename='pcrpetr.xlsx')
+    sheet_petr = workbook_petr.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
+    total_rows_petr = sheet_petr.max_row
+    ultn_petr = sheet_petr.cell(row=total_rows_petr, column=2).value
+    ultv_petr = sheet_petr.cell(row=total_rows_petr, column=3).value
 
+    workbook_vale = load_workbook(filename='pcrvale.xlsx')
+    sheet_vale = workbook_vale.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
+    total_rows_vale = sheet_vale.max_row
+    ultn_vale = sheet_vale.cell(row=total_rows_vale, column=2).value
+    ultv_vale = sheet_vale.cell(row=total_rows_vale, column=3).value
+    
+    st.write('##### PCR - Cálculo por número de negócios')
+    col1, col2, col3, col4, col5 = st.columns(5)
+    # Adicione conteúdo em cada coluna
+    with col1:
+        st.metric('PCR ABEV3', value=round(ultn_abev,2))
+
+    with col2:
+        st.metric('PCR BBDC4', value=round(ultn_bbdc,2))
+
+    with col3:
+        st.metric('PCR BOVA11', value=round(ultn_bova,2))
+
+    with col4:
+        st.metric('PCR PETR4', value=round(ultn_petr,2))
+
+    with col5:
+        st.metric('PCR VALE3', value=round(ultn_vale,2))
+    
+    st.markdown('---')
+
+    st.write('##### PCR - Cálculo por volume negociado')
+    col1, col2, col3, col4, col5 = st.columns(5)
+    # Adicione conteúdo em cada coluna
+    with col1:
+        st.metric('PCR ABEV3', value=round(ultv_abev,2))
+
+    with col2:
+        st.metric('PCR BBDC4', value=round(ultv_bbdc,2))
+
+    with col3:
+        st.metric('PCR BOVA11', value=round(ultv_bova,2))
+
+    with col4:
+        st.metric('PCR PETR4', value=round(ultv_vale,2))
+
+    with col5:
+        st.metric('PCR VALE3', value=round(ultv_vale,2))
+    

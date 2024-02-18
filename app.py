@@ -5,7 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
-from datetime import datetime
+import datetime
+from datetime import datetime, timedelta, time
 import math
 from scipy import stats
 from scipy.stats import norm
@@ -236,17 +237,84 @@ elif selected_calculator == "Cones de Volatilidade":
                 Os cones de volatilidade podem ajudar nessa análise. Veja abaixo gráficos do cone de
                 volatilidade para diferentes ativos subjacentes.
         """)
-    #
+
+    acaocone = st.radio('Escolha o ativo subjacente', ['ABEV3','BBDC4','BOVA11','PETR4','VALE3'])    
+    windows = [15, 30, 45, 60, 75, 90, 105, 120]
+    quantiles = [0.25, 0.75]
+    min_ = []
+    max_ = []
+    median = []
+    top_q = []
+    bottom_q = []
+    realized = []
+    start = "2006-01-02"
+    def realized_vol(price_data, window=30):
+        log_return = (price_data["Close"] / price_data["Close"].shift(1)).apply(np.log)
+        return log_return.rolling(window=window, center=False).std() * math.sqrt(252)
+
+    if acaocone == 'ABEV3':
+        data = yf.download('ABEV3.SA', start=start)
+    if acaocone == 'BBDC4':
+        data = yf.download('BBDC4.SA', start=start)
+    if acaocone == 'BOVA11':
+        data = yf.download('BOVA11.SA', start=start)
+    if acaocone == 'PETR4':
+        data = yf.download('PETR4.SA', start=start)
+    if acaocone == 'VALE3':
+        data = yf.download('VALE3.SA', start=start)
+
+    for window in windows:
+        # get a dataframe with realized volatility
+        estimator = realized_vol(window=window, price_data=data)
+        # append the summary stats to a list
+        min_.append(estimator.min())
+        max_.append(estimator.max())
+        median.append(estimator.median())
+        top_q.append(estimator.quantile(quantiles[1]))
+        bottom_q.append(estimator.quantile(quantiles[0]))
+        realized.append(estimator.iloc[-1])
     
+    data = [
+    go.Scatter(x=windows, y=min_, mode='markers+lines', name='Min'),
+    go.Scatter(x=windows, y=max_, mode='markers+lines', name='Max'),
+    go.Scatter(x=windows, y=median, mode='markers+lines', name='Mediana'),
+    go.Scatter(x=windows, y=top_q, mode='markers+lines', name=f'{quantiles[1] * 100:.0f} Percentil'),
+    go.Scatter(x=windows, y=bottom_q, mode='markers+lines', name=f'{quantiles[0] * 100:.0f} Percentil'),
+    go.Scatter(x=windows, y=realized, mode='markers+lines', name='Realizado', marker=dict(color='yellow'))
+    ]
 
+    # Criar o layout do gráfico
+    layout = go.Layout(
+        title=f'Cone de Volatilidade - {acaocone}',
+        xaxis=dict(title='Janelas'),
+        yaxis=dict(title='Valores'),
+        legend=dict(x=0.5, y=1.0, bgcolor='rgba(255, 255, 255, 0)', bordercolor='rgba(255, 255, 255, 0)')
+    )
 
+    # Criar o gráfico
+    fig = go.Figure(data=data, layout=layout)
+    st.plotly_chart(fig)
+
+#    # create the plots on the chart
+#    plt.plot(windows, min_, "-o", linewidth=1, label="Min")
+#    plt.plot(windows, max_, "-o", linewidth=1, label="Max")
+#    plt.plot(windows, median, "-o", linewidth=1, label="Mediana")
+#    plt.plot(windows, top_q, "-o", linewidth=1, label=f"{quantiles[1] * 100:.0f} Prctl")
+#    plt.plot(windows, bottom_q, "-o", linewidth=1, label=f"{quantiles[0] * 100:.0f} Prctl")
+#    plt.plot(windows, realized, "ro-.", linewidth=1, label="Realizado")
+#    # set the x-axis labels
+#    plt.xticks(windows)
+#    # format the legend
+#    plt.legend(loc="upper center", bbox_to_anchor=(0.5, 1), ncol=3)
+#    plt.title(f'Cone de Volatilidade - {ativo_sem_extensao}')
+#    plt.xlabel('Janelas')
+
+#    ativo_sem_extensao = ativo_do_dia.rstrip('.SA')
 
 
 
 
 #elif selected_calculator == "Put Call Ratio - PCR":
-#    # Evolução de Put Call Ratio
-#
 #    # Título do aplicativo
 #    st.subheader('Put Call Ratio - PCR')
 #    st.markdown("""

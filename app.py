@@ -11,38 +11,35 @@ from scipy import stats
 from scipy.stats import norm
 from scipy.optimize import newton
 
-st.markdown("# Harpa Quant")
-st.write('Ferramentas quantitativas para o investidor prospectivo.')
+st.title("Harpa Quant")
+st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
+st.markdown("""Escolha à esquerda a ferramenta.""")
+
 st.markdown("[![Twitter](https://img.shields.io/badge/Twitter-%231DA1F2.svg?style=for-the-badge&logo=Twitter&logoColor=white)](https://twitter.com/harpaquant)")
 st.markdown("[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://www.instagram.com/harpaquant)")
 
 st.markdown('---')
 
 st.sidebar.markdown("""
-    Estudos quantitativos para auxiliar a tomada de decisão de investidores. 
     Atualmente, disponibilizando ferramentas para o mercado de derivativos. 
     Acesse nossa [Comunidade no Discord](https://discord.gg/MaF7wZDQvZ) para participar de discussões no tema. Email: harpaquant@gmail.com
     """)
 
 st.sidebar.markdown('---')
 
-#selected_calculator = st.sidebar.selectbox(
-#    "Selecione a ferramenta:",
-#    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Put Call Ratio - PCR", "Cones de Volatilidade")
-#)
-
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções")
+    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Cones de Volatilidade")
 )
-
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('Calculadoras Black-Scholes-Merton \n\n- Preço da opção\n\n- Volatilidade implícita')
 st.sidebar.write('Calculadora de Gregas de Opções')
-#st.sidebar.write('Put Call Ratio - PCR')
-#st.sidebar.write('Cones de Volatilidade')
+st.sidebar.write('Cones de Volatilidade')
+
+###########################
+### BLACK-SCHOLES
 
 if selected_calculator == "Calculadoras Black-Scholes-Merton":
     
@@ -141,6 +138,9 @@ if selected_calculator == "Calculadoras Black-Scholes-Merton":
         sigma_impl = implied_volatility(option_price, Sv, Kv, Tv, rv, option_type)
         st.write(f'A volatilidade implícita é {round(sigma_impl,2)}')
 
+###########################
+### GREGAS
+
 elif selected_calculator == "Calculadora de Gregas de Opções":
     # Calculadora de gregas
     # Função para calcular a grega Delta
@@ -223,6 +223,27 @@ elif selected_calculator == "Calculadora de Gregas de Opções":
         st.write("Theta:", round(theta(S, K, T, r, sigma, option_type),6))
         st.write("Rho:", round(rho(S, K, T, r, sigma, option_type),6))
 
+###########################
+### GREGAS
+
+elif selected_calculator == "Cones de Volatilidade":
+    # Cones de volatilidade para diferentes ativos
+    st.subheader('Cones de Volatilidade')
+    st.markdown("""
+        A parte mais difícil da negociação de opções é determinar se elas estão baratas ou caras. 
+                Ao comprar ou vender uma opção, você está exposto à volatilidade do ativo subjacente. 
+                Por isso, é importante comparar a volatilidade aos seus níveis recentes. 
+                Os cones de volatilidade podem ajudar nessa análise. Veja abaixo gráficos do cone de
+                volatilidade para diferentes ativos subjacentes.
+        """)
+    #
+    
+
+
+
+
+
+
 #elif selected_calculator == "Put Call Ratio - PCR":
 #    # Evolução de Put Call Ratio
 #
@@ -237,16 +258,3 @@ elif selected_calculator == "Calculadora de Gregas de Opções":
     
 
 
-#elif selected_calculator == "Cones de Volatilidade":
-#    # Evolução de Put Call Ratio
-#
-#    # Título do aplicativo
-#    st.subheader('Cones de Volatilidade')
-#    st.markdown("""
-#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-#        Este é um exemplo de bloco de texto usando Markdown no Streamlit.
-#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-#        Este é um exemplo de bloco de texto usando Markdown no Streamlit. 
-#        """)

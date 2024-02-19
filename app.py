@@ -336,7 +336,11 @@ elif selected_calculator == "PCR - Put Call Ratio":
     total_rows_abev = sheet_abev.max_row
     ultn_abev = sheet_abev.cell(row=total_rows_abev, column=2).value
     ultv_abev = sheet_abev.cell(row=total_rows_abev, column=3).value
-    
+    #pultn_abev = sheet_abev.cell(row=(total_rows_abev-1), column=2).value
+    #pultv_abev = sheet_abev.cell(row=(total_rows_abev-1), column=3).value
+    #deltan = (ultn_abev/pultn_abev - 1) * 100
+    #deltav = (ultv_abev/pultv_abev - 1) * 100
+
     workbook_bbdc = load_workbook(filename='pcrbbdc.xlsx')
     sheet_bbdc = workbook_bbdc.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
     total_rows_bbdc = sheet_bbdc.max_row
@@ -398,4 +402,4 @@ elif selected_calculator == "PCR - Put Call Ratio":
 
     with col5:
         st.metric('PCR VALE3', value=round(ultv_vale,2))
-    
+

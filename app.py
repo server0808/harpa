@@ -46,12 +46,13 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ( "PCR - Put Call Ratio", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton")
+    ("PCR - Put Call Ratio", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton")
 )
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('PCR - Put Call Ratio')
+st.sidebar.write('Seguro da Carteira')
 st.sidebar.write('Cones de Volatilidade')
 st.sidebar.write('Calculadora de Gregas de Opções \n\n- Delta, Gamma, Vega, Theta, Rho ')
 st.sidebar.write('Calculadoras Black-Scholes-Merton \n\n- Preço da opção\n\n- Volatilidade implícita')
@@ -403,3 +404,25 @@ elif selected_calculator == "PCR - Put Call Ratio":
     with col5:
         st.metric('PCR VALE3', value=round(ultv_vale,2))
 
+###########################
+### Seguro da Carteira
+    
+elif selected_calculator == "Seguro da Carteira":
+    # Título do aplicativo
+    st.subheader('Seguro da Carteira')
+    st.markdown("""
+        Proteger sua carteira contra disaster risk é essencial. A estratégia de compra de puts 
+                fora do dinheiro oferece uma camada de segurança adicional, minimizando exposições 
+                indesejadas e fortalecendo a resiliência de seus investimentos. Uma maneira de 
+                operacionalizar essa estratégia de proteção consiste em alocar um pequeno percentual 
+                da sua carteira em puts de BOVA11 bem fora do dinheiro. Abaixo, algumas candidatas. 
+        """)
+    st.markdown('---')
+
+    ult_bova11_disaster = yf.download('BOVA11.SA')['Close'].iloc[-1]
+    # Carregar a planilha
+    bova11_disaster = pd.read_excel('bova11_disaster.xlsx')
+    bova11_disaster['% do Spot'] = bova11_disaster['Strike'] / ult_bova11_disaster
+    bova11_disaster = bova11_disaster.drop(columns=['Subjacente', 'Tipo'])
+    st.markdown(bova11_disaster.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+    

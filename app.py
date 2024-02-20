@@ -15,6 +15,7 @@ from openpyxl import Workbook, load_workbook
 import requests
 import zipfile
 import io
+import fundamentus
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
@@ -49,17 +50,18 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("PCR - Put Call Ratio", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top Fundos Quantitativos")
+    ("PCR - Put Call Ratio", "Carteiras por Factor Investing", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
 )
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('PCR - Put Call Ratio')
+st.sidebar.write('Carteiras por Factor Investing \n\n- Magic Formula de Joel Greenblatt' )
 st.sidebar.write('Seguro da Carteira')
 st.sidebar.write('Cones de Volatilidade')
 st.sidebar.write('Calculadora de Gregas de Opções \n\n- Delta, Gamma, Vega, Theta, Rho ')
 st.sidebar.write('Calculadoras Black-Scholes-Merton \n\n- Preço da opção\n\n- Volatilidade implícita')
-st.sidebar.write('Top Fundos Quantitativos')
+st.sidebar.write('Top 10 Fundos Quantitativos')
 
 ###########################
 ### BLACK-SCHOLES
@@ -444,16 +446,17 @@ elif selected_calculator == "Seguro da Carteira":
     ult_bova11_disaster = yf.download('BOVA11.SA')['Close'].iloc[-1]
     # Carregar a planilha
     bova11_disaster = pd.read_excel('bova11_disaster.xlsx')
-    bova11_disaster['% do Spot'] = bova11_disaster['Strike'] / ult_bova11_disaster
+    bova11_disaster['Fração do Spot'] = bova11_disaster['Strike'] / ult_bova11_disaster
     bova11_disaster = bova11_disaster.drop(columns=['Subjacente', 'Tipo'])
     bova11_disaster['Volume'] = bova11_disaster['Volume'].round(2)
-    bova11_disaster['% do Spot'] = bova11_disaster['% do Spot'].round(2)
-    st.markdown(bova11_disaster.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+    bova11_disaster = bova11_disaster.round(2)
+    html = bova11_disaster.to_html(index=False)
+    st.write(html, unsafe_allow_html=True)
     
 ###########################
 ### Top Fundos Quantitativos
     
-elif selected_calculator == "Top Fundos Quantitativos":
+elif selected_calculator == "Top 10 Fundos Quantitativos":
     # Título do aplicativo
     st.subheader('Top 10 Fundos "Quantitativos"')
     st.markdown("""
@@ -508,3 +511,58 @@ elif selected_calculator == "Top Fundos Quantitativos":
     top_10_df = top_10_df[['Denominação Social', 'Retorno (%)']]
 
     st.dataframe(top_10_df)
+
+################################
+### Factor Investing - Carteiras
+    
+elif selected_calculator == "Carteiras por Factor Investing":
+    # Título do aplicativo
+    st.subheader('Carteiras por Factor Investing')
+    st.markdown("""
+        O Factor Investing é uma estratégia que busca capturar retornos excedentes ao mirar 
+                em fatores específicos, como valor, momento, tamanho, qualidade, baixa 
+                volatilidade, aderência a padrões esperados em ESG e outras características 
+                dentro de uma carteira diversificada. Compreender esses fatores e suas 
+                interações é crucial para decisões de investimento. 
+        """)
+    st.markdown('---')
+
+    # Abrir colunas para selecionar as carteiras em radio
+    acaocarteiras = st.radio('Escolha a Carteira por Factor Investing', ['Magic Formula de Joel Greenblatt'])
+
+    if acaocarteiras == 'Magic Formula de Joel Greenblatt':
+        # Codigo MF
+        dfraw = fundamentus.get_resultado_raw()
+    df = fundamentus.get_resultado()
+    # Primeiros filtros
+    df2 = df[df.pl > 0]
+    df3 = df2[df2.evebit > 0]
+    df4 = df3[df3.roic > 0]
+    df5 = df4[df4.patrliq > 100000000]
+    stocks_df = df5[df5.liq2m > 0]
+    stocks_df = stocks_df[['evebit', 'roic']]
+    # Trabalhando apenas com dy e roic
+    data = {'Stock': stocks_df.index,
+            'Earnings_Yield': stocks_df['evebit'],
+            'ROIC': stocks_df['roic']}
+    stocks_df = pd.DataFrame(data)
+    # Ordenando dy e roic
+    stocks_df['Earnings_Yield_Rank'] = stocks_df['Earnings_Yield'].rank(ascending=True)
+    stocks_df['ROIC_Rank'] = stocks_df['ROIC'].rank(ascending=False)
+    # Calculando a magic formula
+    stocks_df['Magic_Formula_Rank'] = stocks_df['Earnings_Yield_Rank'] + stocks_df['ROIC_Rank']
+    # Ordenando pela magic formula
+    sorted_stocks = stocks_df.sort_values('Magic_Formula_Rank')
+    # Visualizando
+    ativos = sorted_stocks.head(30)
+    # Removendo baixa liquidez
+    codigos_a_remover = ['CEDO4', 'RSUL4', 'CEDO3', 'CAMB3', 'PETR3', 'MTSA4', 'DEXP3', 'MRSA6B', 'AURA33']
+    ativos = ativos.drop(codigos_a_remover, axis=0)
+    carteiramf = ativos.head(10)
+    colunas_para_remover = ['Earnings_Yield_Rank', 'ROIC_Rank', 'Magic_Formula_Rank']
+    carteiramf = carteiramf.drop(columns=colunas_para_remover)
+    del carteiramf['Stock']
+    novos_nomes_colunas = {'Earnings_Yield': 'Earnings Yield', 'ROIC': 'ROIC'}
+    carteiramf = carteiramf.rename(columns=novos_nomes_colunas)
+    carteiramf = carteiramf.rename_axis('Código', axis='index')
+    st.dataframe(carteiramf)

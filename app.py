@@ -38,8 +38,8 @@ with col5:
 st.markdown('---')
 
 st.sidebar.markdown("""
-    Atualmente, disponibilizando ferramentas para o mercado de derivativos. 
-    Acesse nossa [Comunidade no Discord](https://discord.gg/MaF7wZDQvZ) para participar de discussões no tema. Email: harpaquant@gmail.com
+    Acesse nossa [Comunidade no Discord](https://discord.gg/MaF7wZDQvZ) para participar de 
+                    discussões no tema. Contato: harpaquant@gmail.com
     """)
 
 st.sidebar.markdown('---')
@@ -327,7 +327,8 @@ elif selected_calculator == "PCR - Put Call Ratio":
                 de opções de venda com o volume de negociação de opções de compra, 
                 oferecendo insights sobre as expectativas dos investidores.
                 Alta do PCR pode sinalizar pessimismo em relação ao preço do ativo subjacente.
-                Queda do PCR pode sinalizar otimismo em relação ao preço do ativo subjacente. 
+                Queda do PCR pode sinalizar otimismo em relação ao preço do ativo subjacente.
+                Variação indicada abaixo se dá em relação ao valor observado no penúltimo dia útil. 
         """)
     st.markdown('---')
     
@@ -337,52 +338,68 @@ elif selected_calculator == "PCR - Put Call Ratio":
     total_rows_abev = sheet_abev.max_row
     ultn_abev = sheet_abev.cell(row=total_rows_abev, column=2).value
     ultv_abev = sheet_abev.cell(row=total_rows_abev, column=3).value
-    #pultn_abev = sheet_abev.cell(row=(total_rows_abev-1), column=2).value
-    #pultv_abev = sheet_abev.cell(row=(total_rows_abev-1), column=3).value
-    #deltan = (ultn_abev/pultn_abev - 1) * 100
-    #deltav = (ultv_abev/pultv_abev - 1) * 100
+    pultn_abev = sheet_abev.cell(row=(total_rows_abev-1), column=2).value
+    pultv_abev = sheet_abev.cell(row=(total_rows_abev-1), column=3).value
+    deltan_abev = (ultn_abev/pultn_abev - 1) * 100
+    deltav_abev = (ultv_abev/pultv_abev - 1) * 100
 
     workbook_bbdc = load_workbook(filename='pcrbbdc.xlsx')
     sheet_bbdc = workbook_bbdc.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
     total_rows_bbdc = sheet_bbdc.max_row
     ultn_bbdc = sheet_bbdc.cell(row=total_rows_bbdc, column=2).value
     ultv_bbdc = sheet_bbdc.cell(row=total_rows_bbdc, column=3).value
-    
+    pultn_bbdc = sheet_bbdc.cell(row=(total_rows_bbdc-1), column=2).value
+    pultv_bbdc = sheet_bbdc.cell(row=(total_rows_bbdc-1), column=3).value
+    deltan_bbdc = (ultn_bbdc/pultn_bbdc - 1) * 100
+    deltav_bbdc = (ultv_bbdc/pultv_bbdc - 1) * 100
+
     workbook_bova = load_workbook(filename='pcrbova.xlsx')
     sheet_bova = workbook_bova.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
     total_rows_bova = sheet_bova.max_row
     ultn_bova = sheet_bova.cell(row=total_rows_bova, column=2).value
     ultv_bova = sheet_bova.cell(row=total_rows_bova, column=3).value
+    pultn_bova = sheet_bova.cell(row=(total_rows_bova-1), column=2).value
+    pultv_bova = sheet_bova.cell(row=(total_rows_bova-1), column=3).value
+    deltan_bova = (ultn_bova/pultn_bova - 1) * 100
+    deltav_bova = (ultv_bova/pultv_bova - 1) * 100
 
     workbook_petr = load_workbook(filename='pcrpetr.xlsx')
     sheet_petr = workbook_petr.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
     total_rows_petr = sheet_petr.max_row
     ultn_petr = sheet_petr.cell(row=total_rows_petr, column=2).value
     ultv_petr = sheet_petr.cell(row=total_rows_petr, column=3).value
+    pultn_petr = sheet_petr.cell(row=(total_rows_petr-1), column=2).value
+    pultv_petr = sheet_petr.cell(row=(total_rows_petr-1), column=3).value
+    deltan_petr = (ultn_petr/pultn_petr - 1) * 100
+    deltav_petr = (ultv_petr/pultv_petr - 1) * 100
 
     workbook_vale = load_workbook(filename='pcrvale.xlsx')
     sheet_vale = workbook_vale.active  # Ou você pode selecionar uma planilha específica pelo nome: workbook['nome_da_planilha']
     total_rows_vale = sheet_vale.max_row
     ultn_vale = sheet_vale.cell(row=total_rows_vale, column=2).value
     ultv_vale = sheet_vale.cell(row=total_rows_vale, column=3).value
-    
+    pultn_vale = sheet_vale.cell(row=(total_rows_vale-1), column=2).value
+    pultv_vale = sheet_vale.cell(row=(total_rows_vale-1), column=3).value
+    deltan_vale = (ultn_vale/pultn_vale - 1) * 100
+    deltav_vale = (ultv_vale/pultv_vale - 1) * 100
+
     st.write('##### PCR - Cálculo por número de negócios')
     col1, col2, col3, col4, col5 = st.columns(5)
     # Adicione conteúdo em cada coluna
     with col1:
-        st.metric('PCR ABEV3', value=round(ultn_abev,2))
+        st.metric('PCR ABEV3', value=round(ultn_abev,2), delta=f'{round(deltan_abev,2)}%')
 
     with col2:
-        st.metric('PCR BBDC4', value=round(ultn_bbdc,2))
+        st.metric('PCR BBDC4', value=round(ultn_bbdc,2), delta=f'{round(deltan_bbdc,2)}%')
 
     with col3:
-        st.metric('PCR BOVA11', value=round(ultn_bova,2))
+        st.metric('PCR BOVA11', value=round(ultn_bova,2), delta=f'{round(deltan_bova,2)}%')
 
     with col4:
-        st.metric('PCR PETR4', value=round(ultn_petr,2))
+        st.metric('PCR PETR4', value=round(ultn_petr,2), delta=f'{round(deltan_petr,2)}%')
 
     with col5:
-        st.metric('PCR VALE3', value=round(ultn_vale,2))
+        st.metric('PCR VALE3', value=round(ultn_vale,2), delta=f'{round(deltan_vale,2)}%')
     
     st.markdown('---')
 
@@ -390,19 +407,19 @@ elif selected_calculator == "PCR - Put Call Ratio":
     col1, col2, col3, col4, col5 = st.columns(5)
     # Adicione conteúdo em cada coluna
     with col1:
-        st.metric('PCR ABEV3', value=round(ultv_abev,2))
+        st.metric('PCR ABEV3', value=round(ultv_abev,2), delta=f'{round(deltav_abev,2)}%')
 
     with col2:
-        st.metric('PCR BBDC4', value=round(ultv_bbdc,2))
+        st.metric('PCR BBDC4', value=round(ultv_bbdc,2), delta=f'{round(deltav_bbdc,2)}%')
 
     with col3:
-        st.metric('PCR BOVA11', value=round(ultv_bova,2))
+        st.metric('PCR BOVA11', value=round(ultv_bova,2), delta=f'{round(deltav_bova,2)}%')
 
     with col4:
-        st.metric('PCR PETR4', value=round(ultv_vale,2))
+        st.metric('PCR PETR4', value=round(ultv_petr,2), delta=f'{round(deltav_petr,2)}%')
 
     with col5:
-        st.metric('PCR VALE3', value=round(ultv_vale,2))
+        st.metric('PCR VALE3', value=round(ultv_vale,2), delta=f'{round(deltav_vale,2)}%')
 
 ###########################
 ### Seguro da Carteira
@@ -415,7 +432,8 @@ elif selected_calculator == "Seguro da Carteira":
                 fora do dinheiro oferece uma camada de segurança adicional, minimizando exposições 
                 indesejadas e fortalecendo a resiliência de seus investimentos. Uma maneira de 
                 operacionalizar essa estratégia de proteção consiste em alocar um pequeno percentual 
-                da sua carteira em puts de BOVA11 bem fora do dinheiro. Abaixo, algumas candidatas. 
+                da sua carteira em puts de BOVA11 bem fora do dinheiro. Abaixo, algumas candidatas
+                (tabela atualizada diariamente). 
         """)
     st.markdown('---')
 
@@ -424,5 +442,7 @@ elif selected_calculator == "Seguro da Carteira":
     bova11_disaster = pd.read_excel('bova11_disaster.xlsx')
     bova11_disaster['% do Spot'] = bova11_disaster['Strike'] / ult_bova11_disaster
     bova11_disaster = bova11_disaster.drop(columns=['Subjacente', 'Tipo'])
+    bova11_disaster['Volume'] = bova11_disaster['Volume'].round(2)
+    bova11_disaster['% do Spot'] = bova11_disaster['% do Spot'].round(2)
     st.markdown(bova11_disaster.style.hide(axis="index").to_html(), unsafe_allow_html=True)
     

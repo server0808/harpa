@@ -528,7 +528,7 @@ elif selected_calculator == "Carteiras por Factor Investing":
     st.markdown('---')
 
     # Abrir colunas para selecionar as carteiras em radio
-    acaocarteiras = st.radio('Escolha a Carteira por Factor Investing', ['Magic Formula de Joel Greenblatt'])
+    acaocarteiras = st.radio('Escolha a Carteira por critério de Factor Investing', ['Magic Formula de Joel Greenblatt'])
 
     if acaocarteiras == 'Magic Formula de Joel Greenblatt':
         # Codigo MF

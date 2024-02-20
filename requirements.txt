@@ -10,4 +10,4 @@ openpyxl
 zipfile
 requests
 seaborn
-fundametus
+fundamentus

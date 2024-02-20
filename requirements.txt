@@ -7,3 +7,6 @@ plotly
 datetime
 scipy
 openpyxl
+zipfile
+requests
+seaborn

@@ -50,12 +50,13 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("PCR - Put Call Ratio", "Carteiras por Factor Investing", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
+    ("PCR - Put Call Ratio", "BDR - Spreads", "Carteiras por Factor Investing", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
 )
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('PCR - Put Call Ratio')
+st.sidebar.write('BDR - Spreads')
 st.sidebar.write('Carteiras por Factor Investing \n\n- Magic Formula de Joel Greenblatt' )
 st.sidebar.write('Seguro da Carteira')
 st.sidebar.write('Cones de Volatilidade')
@@ -566,3 +567,37 @@ elif selected_calculator == "Carteiras por Factor Investing":
     carteiramf = carteiramf.rename(columns=novos_nomes_colunas)
     carteiramf = carteiramf.rename_axis('Código', axis='index')
     st.dataframe(carteiramf)
+
+
+################################
+### BDR - Spreads
+    
+elif selected_calculator == "BDR - Spreads":
+    # Título do aplicativo
+    st.subheader('BDR - Maiores e Menores Spreads')
+    st.markdown("""
+        O spread entre ações americanas e BDRs reflete as diferenças de preços e 
+                condições de mercado entre os EUA e o Brasil. Enquanto as ações americanas 
+                são negociadas nos mercados dos EUA, os BDRs são recibos de ações estrangeiras 
+                negociadas na Bolsa brasileira. Há um spread, uma diferença entre o valor da ação
+                 e o da BDR equivalente (lembrando que um BDR não necessariamente corresponde a 
+                apenas um papel). Para calcular, você deve multiplicar o preço da ação pelo câmbio 
+                atual e pela proporção de ações no lote. A diferença entre esse valor e o do BDR é 
+                o spread. O spread pode variar devido a fatores como taxas de câmbio, liquidez 
+                e regulamentações. Os investidores devem estar atentos a essas diferenças ao 
+                considerar suas estratégias de investimento em ações globais. Abaixo, os maiores
+                e menores valores de spread para BDRs integrantes do índice BDRX B3.
+        """)
+    st.markdown('---')
+
+    # Abrir colunas para selecionar as carteiras em radio
+
+    bdrmaiores = pd.read_excel('bdrmaiores.xlsx')
+    bdrmenores = pd.read_excel('bdrmenores.xlsx')
+
+    # Exibir o DataFrame
+    st.markdown('#### Maiores Spreads')
+    st.markdown(bdrmaiores.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+    st.markdown('---')
+    st.markdown('#### Menores Spreads')
+    st.markdown(bdrmenores.style.hide(axis="index").to_html(), unsafe_allow_html=True)

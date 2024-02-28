@@ -12,3 +12,4 @@ seaborn
 fundamentus
 pybind11
 riskfolio-lib
+riskfolio

@@ -16,6 +16,7 @@ import requests
 import zipfile
 import io
 import fundamentus
+import riskfolio as rp
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
@@ -50,14 +51,14 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("PCR - Put Call Ratio", "BDR - Spreads", "Carteiras", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
+    ("PCR - Put Call Ratio", "BDR - Spreads", "Carteiras por Factor Investing", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
 )
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('PCR - Put Call Ratio')
 st.sidebar.write('BDR - Spreads')
-st.sidebar.write('Carteiras \n\n- Magic Formula \n\n- Risk Parity' )
+st.sidebar.write('Carteiras \n\n- Magic Formula de Joel Greenblatt \n\n- Risk Parity' )
 st.sidebar.write('Seguro da Carteira')
 st.sidebar.write('Cones de Volatilidade')
 st.sidebar.write('Calculadora de Gregas de Opções \n\n- Delta, Gamma, Vega, Theta, Rho ')
@@ -514,17 +515,17 @@ elif selected_calculator == "Top 10 Fundos Quantitativos":
     st.dataframe(top_10_df)
 
 ################################
-### Factor Investing - Carteiras
+### Carteiras
     
-elif selected_calculator == "Carteiras":
+elif selected_calculator == "Carteiras por Factor Investing":
     # Título do aplicativo
     st.subheader('Carteiras')
     st.markdown("""
-        O Factor Investing é uma abordagem que busca capturar os retornos excedentes 
-                associados a fatores específicos de mercado, como tamanho da empresa, 
-                valor, momentum, qualidade, volatilidade, entre outros. Nessa estratégia, 
-                a carteira é construída com base na exposição a esses fatores, buscando 
-                superar o desempenho do mercado de forma sistemática. 
+        O Factor Investing é uma estratégia que busca capturar retornos excedentes ao mirar 
+                em fatores específicos, como valor, momento, tamanho, qualidade, baixa 
+                volatilidade, aderência a padrões esperados em ESG e outras características 
+                dentro de uma carteira diversificada. Compreender esses fatores e suas 
+                interações é crucial para decisões de investimento. 
         """)
     st.markdown("""
         A carteira por risk parity é uma estratégia de alocação de ativos que busca 
@@ -594,49 +595,58 @@ elif selected_calculator == "Carteiras":
                     como drivers preponderantes. Isso pode ajudar a diversificar o 
                     risco e potencialmente melhorar os retornos da carteira. 
         """)
-#        # Lista das ações
-#        assets = [
-#            "ABEV3.SA", "ALPA4.SA", "ARZZ3.SA", "ASAI3.SA", "AZUL4.SA", "B3SA3.SA", "BBAS3.SA", 
-#            "BBDC3.SA", "BBDC4.SA", "BBSE3.SA", "BEEF3.SA", "BPAC11.SA", "BRAP4.SA", "BRFS3.SA", "BRKM5.SA", 
-#            "CASH3.SA", "CCRO3.SA", "CIEL3.SA", "CMIG4.SA", "CMIN3.SA", "COGN3.SA", "CPFE3.SA", "CPLE6.SA", 
-#            "CRFB3.SA", "CSAN3.SA", "CSNA3.SA", "CVCB3.SA", "CYRE3.SA", "DXCO3.SA", "EGIE3.SA", "ELET3.SA", 
-#            "ELET6.SA", "EMBR3.SA", "ENEV3.SA", "ENGI11.SA", "EQTL3.SA", "EZTC3.SA", "FLRY3.SA", 
-#            "GGBR4.SA", "GOAU4.SA", "GOLL4.SA", "HAPV3.SA", "HYPE3.SA", "IGTI11.SA", "IRBR3.SA", "ITSA4.SA", 
-#            "ITUB4.SA", "JBSS3.SA", "KLBN11.SA", "LREN3.SA", "LWSA3.SA", "MGLU3.SA", "MRFG3.SA", "MRVE3.SA", 
-#            "MULT3.SA", "NTCO3.SA", "PCAR3.SA", "PETR4.SA", "PETZ3.SA", "PRIO3.SA", "RADL3.SA", 
-#            "RAIL3.SA", "RAIZ4.SA", "RDOR3.SA", "RENT3.SA", "RRRP3.SA", "SANB11.SA", "SBSP3.SA", "SLCE3.SA", 
-#            "SMTO3.SA", "SOMA3.SA", "SUZB3.SA", "TAEE11.SA", "TIMS3.SA", "TOTS3.SA", "UGPA3.SA", "USIM5.SA", 
-#            "VALE3.SA", "VBBR3.SA", "BHIA3.SA", "VIVT3.SA", "WEGE3.SA", "YDUQ3.SA"
-#        ]
-#
-#        # Janela de tempo para coleta de dados
-#        end = datetime.now()
-#        start = end - timedelta(days=200)
-#
-#        # Download dos dados históricos
-#        data = yf.download(assets, start=start, end=end)
+        # Lista das ações
+        assets = [
+            "ABEV3.SA", "ALPA4.SA", "ARZZ3.SA", "ASAI3.SA", "AZUL4.SA", "B3SA3.SA", "BBAS3.SA", 
+            "BBDC3.SA", "BBDC4.SA", "BBSE3.SA", "BEEF3.SA", "BPAC11.SA", "BRAP4.SA", "BRFS3.SA", "BRKM5.SA", 
+            "CASH3.SA", "CCRO3.SA", "CIEL3.SA", "CMIG4.SA", "CMIN3.SA", "COGN3.SA", "CPFE3.SA", "CPLE6.SA", 
+            "CRFB3.SA", "CSAN3.SA", "CSNA3.SA", "CVCB3.SA", "CYRE3.SA", "DXCO3.SA", "EGIE3.SA", "ELET3.SA", 
+            "ELET6.SA", "EMBR3.SA", "ENEV3.SA", "ENGI11.SA", "EQTL3.SA", "EZTC3.SA", "FLRY3.SA", 
+            "GGBR4.SA", "GOAU4.SA", "GOLL4.SA", "HAPV3.SA", "HYPE3.SA", "IGTI11.SA", "IRBR3.SA", "ITSA4.SA", 
+            "ITUB4.SA", "JBSS3.SA", "KLBN11.SA", "LREN3.SA", "LWSA3.SA", "MGLU3.SA", "MRFG3.SA", "MRVE3.SA", 
+            "MULT3.SA", "NTCO3.SA", "PCAR3.SA", "PETR4.SA", "PETZ3.SA", "PRIO3.SA", "RADL3.SA", 
+            "RAIL3.SA", "RAIZ4.SA", "RDOR3.SA", "RENT3.SA", "RRRP3.SA", "SANB11.SA", "SBSP3.SA", "SLCE3.SA", 
+            "SMTO3.SA", "SOMA3.SA", "SUZB3.SA", "TAEE11.SA", "TIMS3.SA", "TOTS3.SA", "UGPA3.SA", "USIM5.SA", 
+            "VALE3.SA", "VBBR3.SA", "BHIA3.SA", "VIVT3.SA", "WEGE3.SA", "YDUQ3.SA"
+        ]
 
-#        # Calcular os retornos diários
-#        returns = data['Adj Close'].pct_change().dropna()
+        #download data
+        end = datetime.now()
+        start = end - timedelta(days = 180)
+        data = yf.download(assets, start=start, end=end)
+        # compute non-compounding, daily returns
+        returns = data['Adj Close'].pct_change().dropna()
 
-#        port = rp.Portfolio(returns)
-#        port.assets_stats(method_mu='hist', method_cov='hist', d=0.94)
-#        w_rp = port.rp_optimization(
-#            model="Classic",  # Modelo de Risk Parity clássico
-#            rm="MV",  # Utilizar otimização de média-variância
-#            hist=True,  # Utilizar cenários históricos
-#            rf=0,  # Taxa livre de risco
-#            b=None,  # Não aplicar restrições adicionais
-#        )
+        # Portfolio with equal risk contribution weights
+        port = rp.Portfolio(returns=returns)
+        port.assets_stats(method_mu='hist', method_cov='hist', d=0.94)
+        w_rp = port.rp_optimization(
+            model="Classic",  # use historical
+            rm="MV",  # use mean-variance optimization
+            hist=True,  # use historical scenarios
+            rf=0,  # set risk free rate to 0
+            b=None  # don't use constraints
+        )
 
-#        dfrp_ordenado = w_rp.sort_values(by='weights', ascending=False)
-#        dfrp = dfrp_ordenado.head(10)
-#        dfrp.index = dfrp.index.astype(str).str.replace('.SA', '')
-#        total = dfrp['weights'].sum()
-#        dfrp['Pesos (%)'] = round((dfrp['weights'] / total) * 100,2)
-#        dfrp = dfrp.drop(columns=['weights'])
-#        dfrp = dfrp.rename_axis('Código', axis='index')
-#        st.dataframe(dfrp)
+        # Portfolio with minimum return constraint
+        port.lowerret = 0.0019
+        # estimate the optimal portfolio with risk parity with the constraint
+        w_rp_c = port.rp_optimization(
+            model="Classic",  # use historical
+            rm="MV",  # use mean-variance optimization
+            hist=True,  # use historical scenarios
+            rf=0,  # set risk free rate to 0
+            b=None  # don't use constraints
+        )
+
+        dfrp_ordenado = w_rp_c.sort_values(by='weights', ascending=False)
+        dfrp = dfrp_ordenado.head(10)
+        dfrp.index = dfrp.index.astype(str).str.replace('.SA', '')
+        total = dfrp['weights'].sum()
+        dfrp['Pesos (%)'] = round((dfrp['weights'] / total) * 100,2)
+        dfrp = dfrp.drop(columns=['weights'])
+        dfrp = dfrp.rename_axis('Código', axis='index')
+        st.dataframe(dfrp)
 
 
 ################################

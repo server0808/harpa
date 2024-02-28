@@ -50,14 +50,14 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("PCR - Put Call Ratio", "BDR - Spreads", "Carteiras por Factor Investing", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
+    ("PCR - Put Call Ratio", "BDR - Spreads", "Carteiras", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
 )
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('PCR - Put Call Ratio')
 st.sidebar.write('BDR - Spreads')
-st.sidebar.write('Carteiras por Factor Investing \n\n- Magic Formula de Joel Greenblatt \n\n- Risk Parity' )
+st.sidebar.write('Carteiras \n\n- Magic Formula \n\n- Risk Parity' )
 st.sidebar.write('Seguro da Carteira')
 st.sidebar.write('Cones de Volatilidade')
 st.sidebar.write('Calculadora de Gregas de Opções \n\n- Delta, Gamma, Vega, Theta, Rho ')
@@ -514,22 +514,30 @@ elif selected_calculator == "Top 10 Fundos Quantitativos":
     st.dataframe(top_10_df)
 
 ################################
-### Factor Investing - Carteiras
+### Carteiras
     
-elif selected_calculator == "Carteiras por Factor Investing":
+elif selected_calculator == "Carteiras":
     # Título do aplicativo
-    st.subheader('Carteiras por Factor Investing')
+    st.subheader('Carteiras')
     st.markdown("""
-        O Factor Investing é uma estratégia que busca capturar retornos excedentes ao mirar 
-                em fatores específicos, como valor, momento, tamanho, qualidade, baixa 
-                volatilidade, aderência a padrões esperados em ESG e outras características 
-                dentro de uma carteira diversificada. Compreender esses fatores e suas 
-                interações é crucial para decisões de investimento. 
+        O Factor Investing é uma abordagem que busca capturar os retornos excedentes 
+                associados a fatores específicos de mercado, como tamanho da empresa, 
+                valor, momentum, qualidade, volatilidade, entre outros. Nessa estratégia, 
+                a carteira é construída com base na exposição a esses fatores, buscando 
+                superar o desempenho do mercado de forma sistemática. 
+        """)
+    st.markdown("""
+        A carteira por risk parity é uma estratégia de alocação de ativos que busca 
+                equalizar o risco de cada componente da carteira. Isso significa que, 
+                em uma carteira por risk parity, cada ativo contribui de forma igual 
+                para a volatilidade total da carteira. Essa equalização do risco pode 
+                ser alcançada através da atribuição de pesos diferentes para cada ativo, 
+                levando em consideração suas correlações e volatilidades históricas. 
         """)
     st.markdown('---')
 
     # Abrir colunas para selecionar as carteiras em radio
-    acaocarteiras = st.radio('Escolha a carteira por critério de Factor Investing', ['Magic Formula de Joel Greenblatt', "Risk Parity"])
+    acaocarteiras = st.radio('Escolha a carteira por critério', ['Magic Formula de Joel Greenblatt', "Risk Parity"])
 
     if acaocarteiras == 'Magic Formula de Joel Greenblatt':
         # Codigo MF
@@ -586,15 +594,6 @@ elif selected_calculator == "Carteiras por Factor Investing":
                     como drivers preponderantes. Isso pode ajudar a diversificar o 
                     risco e potencialmente melhorar os retornos da carteira. 
         """)
-        
-        #dfrp_ordenado = w_rp.sort_values(by='weights', ascending=False)
-        #dfrp = dfrp_ordenado.head(10)
-        #dfrp.index = dfrp.index.astype(str).str.replace('.SA', '')
-        #total = dfrp['weights'].sum()
-        #dfrp['Pesos (%)'] = round((dfrp['weights'] / total) * 100,2)
-        #dfrp = dfrp.drop(columns=['weights'])
-        #dfrp = dfrp.rename_axis('Código', axis='index')
-        #st.dataframe(dfrp)
 
 
 ################################

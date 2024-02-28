@@ -10,5 +10,5 @@ openpyxl
 requests
 seaborn
 fundamentus
-Riskfolio-Lib
+riskfolio-lib
 riskfolio

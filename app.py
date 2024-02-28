@@ -51,7 +51,7 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("PCR - Put Call Ratio", "BDR - Spreads", "Carteiras por Factor Investing", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
+    ("PCR - Put Call Ratio", "BDR - Spreads", "Carteiras", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
 )
 
 st.sidebar.markdown('---')
@@ -517,7 +517,7 @@ elif selected_calculator == "Top 10 Fundos Quantitativos":
 ################################
 ### Carteiras
     
-elif selected_calculator == "Carteiras por Factor Investing":
+elif selected_calculator == "Carteiras":
     # Título do aplicativo
     st.subheader('Carteiras')
     st.markdown("""

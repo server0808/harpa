@@ -16,7 +16,6 @@ import requests
 import zipfile
 import io
 import fundamentus
-#import riskfolio as rp
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")

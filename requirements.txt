@@ -11,6 +11,4 @@ requests
 seaborn
 fundamentus
 Riskfolio-Lib
-cvxpy
-pybind11
-anaconda
+riskfolio

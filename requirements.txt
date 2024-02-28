@@ -10,7 +10,7 @@ openpyxl
 requests
 seaborn
 fundamentus
-riskfolio-lib
+Riskfolio-Lib
 cvxpy
 pybind11
 anaconda

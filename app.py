@@ -16,10 +16,11 @@ import requests
 import zipfile
 import io
 import fundamentus
+import riskfolio as rp
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
-st.markdown("""Escolha à esquerda a ferramenta.""")
+st.markdown("""Escolha à esquerda a ferramenta (no celular, setinhas bem em cima à esquerda).""")
 
 col1, col2, col3, col4, col5 = st.columns(5)
 
@@ -57,7 +58,7 @@ st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('PCR - Put Call Ratio')
 st.sidebar.write('BDR - Spreads')
-st.sidebar.write('Carteiras por Factor Investing \n\n- Magic Formula de Joel Greenblatt' )
+st.sidebar.write('Carteiras por Factor Investing \n\n- Magic Formula de Joel Greenblatt \n\n- Risk Parity' )
 st.sidebar.write('Seguro da Carteira')
 st.sidebar.write('Cones de Volatilidade')
 st.sidebar.write('Calculadora de Gregas de Opções \n\n- Delta, Gamma, Vega, Theta, Rho ')
@@ -529,44 +530,106 @@ elif selected_calculator == "Carteiras por Factor Investing":
     st.markdown('---')
 
     # Abrir colunas para selecionar as carteiras em radio
-    acaocarteiras = st.radio('Escolha a Carteira por critério de Factor Investing', ['Magic Formula de Joel Greenblatt'])
+    acaocarteiras = st.radio('Escolha a carteira por critério de Factor Investing', ['Magic Formula de Joel Greenblatt', "Risk Parity"])
 
     if acaocarteiras == 'Magic Formula de Joel Greenblatt':
         # Codigo MF
         dfraw = fundamentus.get_resultado_raw()
-    df = fundamentus.get_resultado()
-    # Primeiros filtros
-    df2 = df[df.pl > 0]
-    df3 = df2[df2.evebit > 0]
-    df4 = df3[df3.roic > 0]
-    df5 = df4[df4.patrliq > 100000000]
-    stocks_df = df5[df5.liq2m > 0]
-    stocks_df = stocks_df[['evebit', 'roic']]
-    # Trabalhando apenas com dy e roic
-    data = {'Stock': stocks_df.index,
-            'Earnings_Yield': stocks_df['evebit'],
-            'ROIC': stocks_df['roic']}
-    stocks_df = pd.DataFrame(data)
-    # Ordenando dy e roic
-    stocks_df['Earnings_Yield_Rank'] = stocks_df['Earnings_Yield'].rank(ascending=True)
-    stocks_df['ROIC_Rank'] = stocks_df['ROIC'].rank(ascending=False)
-    # Calculando a magic formula
-    stocks_df['Magic_Formula_Rank'] = stocks_df['Earnings_Yield_Rank'] + stocks_df['ROIC_Rank']
-    # Ordenando pela magic formula
-    sorted_stocks = stocks_df.sort_values('Magic_Formula_Rank')
-    # Visualizando
-    ativos = sorted_stocks.head(30)
-    # Removendo baixa liquidez
-    codigos_a_remover = ['CEDO4', 'RSUL4', 'CEDO3', 'CAMB3', 'PETR3', 'MTSA4', 'DEXP3', 'MRSA6B']
-    ativos = ativos.drop(codigos_a_remover, axis=0)
-    carteiramf = ativos.head(10)
-    colunas_para_remover = ['Earnings_Yield_Rank', 'ROIC_Rank', 'Magic_Formula_Rank']
-    carteiramf = carteiramf.drop(columns=colunas_para_remover)
-    del carteiramf['Stock']
-    novos_nomes_colunas = {'Earnings_Yield': 'Earnings Yield', 'ROIC': 'ROIC'}
-    carteiramf = carteiramf.rename(columns=novos_nomes_colunas)
-    carteiramf = carteiramf.rename_axis('Código', axis='index')
-    st.dataframe(carteiramf)
+        df = fundamentus.get_resultado()
+        # Primeiros filtros
+        df2 = df[df.pl > 0]
+        df3 = df2[df2.evebit > 0]
+        df4 = df3[df3.roic > 0]
+        df5 = df4[df4.patrliq > 100000000]
+        stocks_df = df5[df5.liq2m > 0]
+        stocks_df = stocks_df[['evebit', 'roic']]
+        # Trabalhando apenas com dy e roic
+        data = {'Stock': stocks_df.index,
+                'Earnings_Yield': stocks_df['evebit'],
+                'ROIC': stocks_df['roic']}
+        stocks_df = pd.DataFrame(data)
+        # Ordenando dy e roic
+        stocks_df['Earnings_Yield_Rank'] = stocks_df['Earnings_Yield'].rank(ascending=True)
+        stocks_df['ROIC_Rank'] = stocks_df['ROIC'].rank(ascending=False)
+        # Calculando a magic formula
+        stocks_df['Magic_Formula_Rank'] = stocks_df['Earnings_Yield_Rank'] + stocks_df['ROIC_Rank']
+        # Ordenando pela magic formula
+        sorted_stocks = stocks_df.sort_values('Magic_Formula_Rank')
+        # Visualizando
+        ativos = sorted_stocks.head(30)
+        # Removendo baixa liquidez
+        codigos_a_remover = ['CEDO4', 'RSUL4', 'CEDO3', 'CAMB3', 'PETR3', 'MTSA4', 'DEXP3', 'MRSA6B']
+        ativos = ativos.drop(codigos_a_remover, axis=0)
+        carteiramf = ativos.head(10)
+        colunas_para_remover = ['Earnings_Yield_Rank', 'ROIC_Rank', 'Magic_Formula_Rank']
+        carteiramf = carteiramf.drop(columns=colunas_para_remover)
+        del carteiramf['Stock']
+        novos_nomes_colunas = {'Earnings_Yield': 'Earnings Yield', 'ROIC': 'ROIC'}
+        carteiramf = carteiramf.rename(columns=novos_nomes_colunas)
+        carteiramf = carteiramf.rename_axis('Código', axis='index')
+        st.markdown('---')
+        st.markdown("""
+            A estratégia Magic Formula de investimento, popularizada por Joel Greenblatt, 
+                    busca empresas com baixa avaliação e alta rentabilidade. Baseia-se 
+                    em dois critérios: retorno sobre o capital e múltiplo preço/lucro. 
+                    Investidores usam essa fórmula para encontrar ações com potencial 
+                    de longo prazo. Na seleção abaixo, nossa adaptação prevê pesos iguais
+                    na carteira, ou seja, 10% em cada ação.  
+            """)
+        st.dataframe(carteiramf)
+
+    if acaocarteiras == 'Risk Parity':
+        st.markdown('---')
+        st.markdown("""
+        Risk Parity é uma abordagem de alocação de ativos que equilibra os riscos entre 
+                    diferentes classes de ativos. Diferente da tradicional alocação 
+                    baseada em pesos, o Risk Parity considera a volatilidade e a correlação
+                    como drivers preponderantes. Isso pode ajudar a diversificar o 
+                    risco e potencialmente melhorar os retornos da carteira. 
+        """)
+        # Lista das ações
+        assets = [
+            "ABEV3.SA", "ALPA4.SA", "ARZZ3.SA", "ASAI3.SA", "AZUL4.SA", "B3SA3.SA", "BBAS3.SA", 
+            "BBDC3.SA", "BBDC4.SA", "BBSE3.SA", "BEEF3.SA", "BPAC11.SA", "BRAP4.SA", "BRFS3.SA", "BRKM5.SA", 
+            "CASH3.SA", "CCRO3.SA", "CIEL3.SA", "CMIG4.SA", "CMIN3.SA", "COGN3.SA", "CPFE3.SA", "CPLE6.SA", 
+            "CRFB3.SA", "CSAN3.SA", "CSNA3.SA", "CVCB3.SA", "CYRE3.SA", "DXCO3.SA", "EGIE3.SA", "ELET3.SA", 
+            "ELET6.SA", "EMBR3.SA", "ENEV3.SA", "ENGI11.SA", "EQTL3.SA", "EZTC3.SA", "FLRY3.SA", 
+            "GGBR4.SA", "GOAU4.SA", "GOLL4.SA", "HAPV3.SA", "HYPE3.SA", "IGTI11.SA", "IRBR3.SA", "ITSA4.SA", 
+            "ITUB4.SA", "JBSS3.SA", "KLBN11.SA", "LREN3.SA", "LWSA3.SA", "MGLU3.SA", "MRFG3.SA", "MRVE3.SA", 
+            "MULT3.SA", "NTCO3.SA", "PCAR3.SA", "PETR4.SA", "PETZ3.SA", "PRIO3.SA", "RADL3.SA", 
+            "RAIL3.SA", "RAIZ4.SA", "RDOR3.SA", "RENT3.SA", "RRRP3.SA", "SANB11.SA", "SBSP3.SA", "SLCE3.SA", 
+            "SMTO3.SA", "SOMA3.SA", "SUZB3.SA", "TAEE11.SA", "TIMS3.SA", "TOTS3.SA", "UGPA3.SA", "USIM5.SA", 
+            "VALE3.SA", "VBBR3.SA", "BHIA3.SA", "VIVT3.SA", "WEGE3.SA", "YDUQ3.SA"
+        ]
+
+        # Janela de tempo para coleta de dados
+        end = datetime.now()
+        start = end - timedelta(days=200)
+
+        # Download dos dados históricos
+        data = yf.download(assets, start=start, end=end)
+
+        # Calcular os retornos diários
+        returns = data['Adj Close'].pct_change().dropna()
+
+        port = rp.Portfolio(returns)
+        port.assets_stats(method_mu='hist', method_cov='hist', d=0.94)
+        w_rp = port.rp_optimization(
+            model="Classic",  # Modelo de Risk Parity clássico
+            rm="MV",  # Utilizar otimização de média-variância
+            hist=True,  # Utilizar cenários históricos
+            rf=0,  # Taxa livre de risco
+            b=None,  # Não aplicar restrições adicionais
+        )
+
+        dfrp_ordenado = w_rp.sort_values(by='weights', ascending=False)
+        dfrp = dfrp_ordenado.head(10)
+        dfrp.index = dfrp.index.astype(str).str.replace('.SA', '')
+        total = dfrp['weights'].sum()
+        dfrp['Pesos (%)'] = round((dfrp['weights'] / total) * 100,2)
+        dfrp = dfrp.drop(columns=['weights'])
+        dfrp = dfrp.rename_axis('Código', axis='index')
+        st.dataframe(dfrp)
 
 
 ################################

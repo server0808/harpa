@@ -20,7 +20,7 @@ import riskfolio as rp
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
-st.markdown("""Escolha à esquerda a ferramenta (no celular, setinhas bem em cima à esquerda).""")
+st.markdown("""Escolha à esquerda a ferramenta (no celular, setinha bem em cima à esquerda).""")
 
 col1, col2, col3, col4, col5 = st.columns(5)
 

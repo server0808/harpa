@@ -472,8 +472,8 @@ elif selected_calculator == "Top 10 Fundos Quantitativos":
     st.markdown('---')
 
     # Fetch - MUDAR OS DOIS quando virar o mês
-    arquivo = 'inf_diario_fi_202402.csv'
-    link = 'https://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_202402.zip'
+    arquivo = 'inf_diario_fi_202403.csv'
+    link = 'https://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_202403.zip'
 
     r = requests.get(link)
     zf = zipfile.ZipFile(io.BytesIO(r.content))

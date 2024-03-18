@@ -51,11 +51,12 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("PCR - Put Call Ratio", "BDR - Spreads", "Carteiras", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
+    ("Long Short - Cointegração", "PCR - Put Call Ratio", "BDR - Spreads", "Carteiras", "Seguro da Carteira", "Cones de Volatilidade", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
 )
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
+st.sidebar.write('Long Short - Cointegração')
 st.sidebar.write('PCR - Put Call Ratio')
 st.sidebar.write('BDR - Spreads')
 st.sidebar.write('Carteiras \n\n- Magic Formula de Joel Greenblatt \n\n- Risk Parity' )
@@ -670,8 +671,6 @@ elif selected_calculator == "BDR - Spreads":
         """)
     st.markdown('---')
 
-    # Abrir colunas para selecionar as carteiras em radio
-
     bdrmaiores = pd.read_excel('bdrmaiores.xlsx')
     bdrmenores = pd.read_excel('bdrmenores.xlsx')
 
@@ -681,3 +680,90 @@ elif selected_calculator == "BDR - Spreads":
     st.markdown('---')
     st.markdown('#### Menores Spreads')
     st.markdown(bdrmenores.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+
+################################
+### Long Short - Cointegração
+    
+elif selected_calculator == "Long Short - Cointegração":
+    # Título do aplicativo
+    st.subheader('Long Short - Cointegração')
+    st.markdown("""
+        A estratégia de long short com cointegração e o cálculo de reversão à média de 
+                Ornstein-Uhlenbeck são ferramentas elegíveis na seleção de pares 
+                no mercado de capitais. A cointegração é uma relação estatística entre 
+                duas séries temporais que indica que, mesmo que elas se movam independentemente 
+                no curto prazo, elas têm uma relação de longo prazo estável. 
+                Essa estabilidade permite identificar pares de ativos que têm uma relação de 
+                equilíbrio e, portanto, podem ser utilizados em estratégias de long short. Nessa 
+                estratégia de long short, um par de ativos é selecionado com base na cointegração. 
+                Um dos ativos é comprado (posição longa) enquanto o outro é vendido (posição short). 
+                Isso é feito na expectativa de que, embora os preços dos ativos possam se 
+                afastar temporariamente de seu equilíbrio, eles eventualmente retornarão 
+                a esse equilíbrio de longo prazo, gerando lucros para o investidor.
+                O cálculo de reversão à média de Ornstein-Uhlenbeck é uma técnica que pode ser usada 
+                para estimar o tempo que leva para que os preços de um par de ativos voltem ao 
+                equilíbrio após um desvio. Isso é importante para determinar o momento ideal 
+                para entrar e sair de uma posição, maximizando os lucros potenciais da estratégia 
+                de long short.
+
+        """)
+    st.markdown('---')
+    end = datetime.now()
+    start = end - timedelta(days = 200)
+    #from ibov composition file
+    assets = ["ABEV3.SA", "ALPA4.SA", "ARZZ3.SA", "ASAI3.SA", "AZUL4.SA", "B3SA3.SA", "BBAS3.SA", 
+            "BBDC3.SA", "BBDC4.SA", "BBSE3.SA", "BEEF3.SA", "BPAC11.SA", "BRAP4.SA", "BRFS3.SA", "BRKM5.SA", 
+            "CASH3.SA", "CCRO3.SA", "CIEL3.SA", "CMIG4.SA", "CMIN3.SA", "COGN3.SA", "CPFE3.SA", "CPLE6.SA", 
+            "CRFB3.SA", "CSAN3.SA", "CSNA3.SA", "CVCB3.SA", "CYRE3.SA", "DXCO3.SA", "EGIE3.SA", "ELET3.SA", 
+            "ELET6.SA", "EMBR3.SA", "ENEV3.SA", "ENGI11.SA", "EQTL3.SA", "EZTC3.SA", "FLRY3.SA", 
+            "GGBR4.SA", "GOAU4.SA", "GOLL4.SA", "HAPV3.SA", "HYPE3.SA", "IGTI11.SA", "IRBR3.SA", "ITSA4.SA", 
+            "ITUB4.SA", "JBSS3.SA", "KLBN11.SA", "LREN3.SA", "LWSA3.SA", "MGLU3.SA", "MRFG3.SA", "MRVE3.SA", 
+            "MULT3.SA", "NTCO3.SA", "PCAR3.SA", "PETR3.SA", "PETR4.SA", "PETZ3.SA", "PRIO3.SA", "RADL3.SA", 
+            "RAIL3.SA", "RAIZ4.SA", "RDOR3.SA", "RENT3.SA", "RRRP3.SA", "SANB11.SA", "SBSP3.SA", "SLCE3.SA", 
+            "SMTO3.SA", "SOMA3.SA", "SUZB3.SA", "TAEE11.SA", "TIMS3.SA", "TOTS3.SA", "UGPA3.SA", "USIM5.SA", 
+            "VALE3.SA", "VBBR3.SA", "BHIA3.SA", "VIVT3.SA", "WEGE3.SA", "YDUQ3.SA"]
+    quotes = yf.download(assets, start = start, end = end)["Adj Close"]
+    #drop a column
+    quotes = quotes.drop(quotes.columns[1], axis=1)
+    quotes.isna().sum().sum()  # Checking for NAs
+    # Remove '.SA'
+    quotes.columns = [col[:-3] for col in quotes.columns]
+
+    # Exibir o DataFrame
+    st.markdown('#### 10 Pares considerando dados em D-1')
+    st.markdown('---')
+    # Carregar os pares do arquivo XLSX
+    pairs_df = pd.read_excel("tenpairs.xlsx")
+  
+    # Iterando sobre as 10 primeiras linhas do DataFrame
+for index, row in pairs_df.head(10).iterrows():
+    # Extrair o par de ações
+    acao1 = row['Acao1']
+    acao2 = row['Acao2']
+
+    # Extraindo os dados para o par
+    data1 = quotes[acao1]
+    data2 = quotes[acao2]
+
+    # Criando o gráfico
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    # Plotando a primeira série no lado esquerdo
+    color = 'tab:red'
+    ax1.set_xlabel('Data')
+    ax1.set_ylabel(acao1, color=color)
+    ax1.plot(data1.index, data1.values, color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    # Criando o segundo eixo y para a segunda série no lado direito
+    ax2 = ax1.twinx()
+    color = 'tab:blue'
+    ax2.set_ylabel(acao2, color=color)
+    ax2.plot(data2.index, data2.values, color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    # Configurando títulos dos eixos e legendas
+    plt.title(f'{acao1} vs {acao2}')
+
+    # Exibindo o gráfico no Streamlit
+    st.pyplot(fig)

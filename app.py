@@ -736,7 +736,7 @@ elif selected_calculator == "Long Short - Cointegração":
     pairs_df = pd.read_excel("tenpairs.xlsx")
   
     # Iterando sobre as 10 primeiras linhas do DataFrame
-for index, row in pairs_df.head(10).iterrows():
+    for index, row in pairs_df.head(10).iterrows():
     # Extrair o par de ações
     acao1 = row['Acao1']
     acao2 = row['Acao2']

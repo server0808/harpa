@@ -738,32 +738,32 @@ elif selected_calculator == "Long Short - Cointegração":
     # Iterando sobre as 10 primeiras linhas do DataFrame
     for index, row in pairs_df.head(10).iterrows():
     # Extrair o par de ações
-    acao1 = row['Acao1']
-    acao2 = row['Acao2']
+        acao1 = row['Acao1']
+        acao2 = row['Acao2']
 
-    # Extraindo os dados para o par
-    data1 = quotes[acao1]
-    data2 = quotes[acao2]
+        # Extraindo os dados para o par
+        data1 = quotes[acao1]
+        data2 = quotes[acao2]
 
-    # Criando o gráfico
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+        # Criando o gráfico
+        fig, ax1 = plt.subplots(figsize=(10, 6))
 
-    # Plotando a primeira série no lado esquerdo
-    color = 'tab:red'
-    ax1.set_xlabel('Data')
-    ax1.set_ylabel(acao1, color=color)
-    ax1.plot(data1.index, data1.values, color=color)
-    ax1.tick_params(axis='y', labelcolor=color)
+        # Plotando a primeira série no lado esquerdo
+        color = 'tab:red'
+        ax1.set_xlabel('Data')
+        ax1.set_ylabel(acao1, color=color)
+        ax1.plot(data1.index, data1.values, color=color)
+        ax1.tick_params(axis='y', labelcolor=color)
 
-    # Criando o segundo eixo y para a segunda série no lado direito
-    ax2 = ax1.twinx()
-    color = 'tab:blue'
-    ax2.set_ylabel(acao2, color=color)
-    ax2.plot(data2.index, data2.values, color=color)
-    ax2.tick_params(axis='y', labelcolor=color)
+        # Criando o segundo eixo y para a segunda série no lado direito
+        ax2 = ax1.twinx()
+        color = 'tab:blue'
+        ax2.set_ylabel(acao2, color=color)
+        ax2.plot(data2.index, data2.values, color=color)
+        ax2.tick_params(axis='y', labelcolor=color)
 
-    # Configurando títulos dos eixos e legendas
-    plt.title(f'{acao1} vs {acao2}')
+        # Configurando títulos dos eixos e legendas
+        plt.title(f'{acao1} vs {acao2}')
 
-    # Exibindo o gráfico no Streamlit
-    st.pyplot(fig)
+        # Exibindo o gráfico no Streamlit
+        st.pyplot(fig)

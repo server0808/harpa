@@ -11,3 +11,4 @@ requests
 seaborn
 fundamentus
 riskfolio-lib
+statsmodels

@@ -963,10 +963,10 @@ elif selected_calculator == "Long Short - Teste seu Par":
             st.error('Não há dados suficientes para análise.')
         else:
             # Realizando os testes de raiz unitária
-            unit_root_test_result1 = adfuller(stock_data1, autolag='AIC')[1] > 0.05
-            unit_root_test_result2 = adfuller(stock_data2, autolag='AIC')[1] > 0.05
+            unit_root_test_result1 = adfuller(stock_data1, autolag='AIC')[1] > 0.1
+            unit_root_test_result2 = adfuller(stock_data2, autolag='AIC')[1] > 0.1
             unit_root_test_result3 = adfuller(residuos, autolag='AIC')[1] < 0.05
-            beta_test_result = pbeta < 0.05
+            beta_test_result = pbeta < 0.1
 
             # Realizando a regressão linear
             beta = None

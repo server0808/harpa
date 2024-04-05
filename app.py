@@ -19,6 +19,7 @@ import fundamentus
 import riskfolio as rp
 from statsmodels.regression.linear_model import OLS
 from statsmodels.tsa.stattools import adfuller
+import statsmodels.api as sm
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
@@ -927,17 +928,17 @@ elif selected_calculator == "Long Short - Teste seu Par":
 
     # Funções para realizar a regressão linear e retornar beta, p-valor do beta e residuos
     def linear_regression(x, y):
-        x = np.array(x).reshape(-1, 1)
+        x = sm.add_constant(x)
         model = OLS(y, x).fit()
         return round(model.params[0], 2)  # Retorna o coeficiente beta
     
     def linear_regressionp(x, y):
-        x = np.array(x).reshape(-1, 1)
+        x = sm.add_constant(x)
         model = OLS(y, x).fit()
         return model.pvalues.iloc[0]  # Retorna o p-valor do coeficiente beta
     
     def linear_regressionr(x, y):
-        x = np.array(x).reshape(-1, 1)
+        x = sm.add_constant(x)
         model = OLS(y, x).fit()
         return model.resid  # Retorna os residuos da regressao
     # Entrada dos códigos das ações

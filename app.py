@@ -786,12 +786,12 @@ elif selected_calculator == "Monitor de 5 Dias":
                 que mais subiram e mais caíram em valor, permitindo identificação das tendências 
                 de mercado. Além disso, fornece informações sobre as 10 ações com maior alta 
                 e maior baixa de volume médio de negociação, oferecendo insights sobre o 
-                interesse dos investidores em determinados ativos. 
+                interesse dos investidores em determinados ativos. Por fim, destaca as 10 ações com 
+                maior alta e maior baixa de volatilidade média, destacando os movimentos de preço 
+                mais significativos e potencialmente indicando oportunidades.
                                                  
         """)
-    #Por fim, destaca as 10 ações com maior alta e maior baixa de volatilidade média, 
-    #            destacando os movimentos de preço mais significativos e potencialmente indicando 
-    #               oportunidades de negociação.
+    
     st.markdown('---')
 
     # Datas
@@ -811,8 +811,7 @@ elif selected_calculator == "Monitor de 5 Dias":
             "SMTO3.SA", "SOMA3.SA", "SUZB3.SA", "TAEE11.SA", "TIMS3.SA", "TOTS3.SA", "UGPA3.SA", "USIM5.SA", 
             "VALE3.SA", "VBBR3.SA", "BHIA3.SA", "VIVT3.SA", "WEGE3.SA", "YDUQ3.SA"]
 
-    acaocinco = st.radio('Escolha a tabela', ['Retornos nos últimos 5 dias úteis','Volumes nos últimos 5 dias úteis'])
-    #acaocinco = st.radio('Escolha a tabela', ['Retornos nos últimos 5 dias úteis','Volumes nos últimos 5 dias úteis','Volatilidades nos últimos 5 dias úteis'])
+    acaocinco = st.radio('Escolha a tabela', ['Retornos nos últimos 5 dias úteis','Volumes nos últimos 5 dias úteis','Volatilidades nos últimos 5 dias úteis'])
 
     if acaocinco == 'Retornos nos últimos 5 dias úteis':
         st.markdown('---')
@@ -886,33 +885,54 @@ elif selected_calculator == "Monitor de 5 Dias":
         """)    
         st.markdown(df_maiores_quedasvol.style.hide(axis="index").to_html(), unsafe_allow_html=True)
     
-    #if acaocinco == 'Volatilidades nos últimos 5 dias úteis':
-    #    st.markdown('---')
-    #    st.markdown("""
-    #    #### 10 ações que mais tiveram variação de volatilidade nos últimos 5 dias úteis
-    #    """)
-    #    st.markdown('---')
-    #    # Calcular a volatilidade diária em uma janela móvel dos últimos 22 dias úteis para cada ação
-    #    cotas = yf.download(ativos, start=start, end=end)["Adj Close"]
-    #    volatilidade = cotas.pct_change(fill_method=None).rolling(window=22).std()
-    #    diff_volatilidade = volatilidade.diff(periods=5)
-    #    maiores_crescimentos = diff_volatilidade.max().nlargest(10)
-    #    maiores_quedas = diff_volatilidade.min().nsmallest(10)
-    #    volatilidade.index = volatilidade.index.astype(str).str.replace('\.SA', '')
-    #    maiores_crescimentos.index = maiores_crescimentos.index.str.replace('\.SA', '')
-    #    maiores_quedas.index = maiores_quedas.index.str.replace('\.SA', '')
-    #
-    #    nomes_maiores_crescimentos = maiores_crescimentos.index.tolist()
-    #
-    #     nomes_maiores_quedas = maiores_quedas.index.tolist()
-    #
-    #    # Criar um novo DataFrame combinando os nomes das ações com os títulos das colunas
-    #    df_maiores_crescimentos_quedas = pd.DataFrame({
-    #        "Maiores altas": nomes_maiores_crescimentos,
-    #        "Maiores quedas": nomes_maiores_quedas
-    #    })
-    # 
-    #    st.markdown(df_maiores_crescimentos_quedas.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+
+    if acaocinco == 'Volatilidades nos últimos 5 dias úteis':
+        st.markdown('---')
+        st.markdown("""
+        #### 10 ações que mais tiveram variação de volatilidade nos últimos 5 dias úteis, para cima e para baixo
+        """)
+        st.markdown('---')
+
+        # Calcular a volatilidade diária em uma janela móvel dos últimos 22 dias úteis para cada ação
+        cotas = yf.download(ativos, start=start, end=end)["Adj Close"]
+
+        # Calcular os retornos diários das ações
+        retornos_diarios = cotas.pct_change()
+
+        dp1 = retornos_diarios.tail(22).std()
+        dp1 = pd.DataFrame(dp1)
+        dp1 = dp1.T
+        retornos_diarios.drop(retornos_diarios.tail(1).index,inplace = True)
+
+        for i in range(4):
+            dpx = retornos_diarios.tail(22).std()
+            dpx = pd.DataFrame(dpx)
+            dpx = dpx.T
+            dp1 = pd.concat([dp1, dpx])
+            retornos_diarios.drop(retornos_diarios.tail(1).index,inplace = True)
+
+        diffvol = dp1.pct_change()
+        mediasvol = diffvol.mean()
+        maisvol = mediasvol.nlargest(10)
+        menosvol = mediasvol.nsmallest(10)
+
+        maisvol = pd.DataFrame({'Ticker': maisvol.index.str.replace('\.SA', ''), 
+                                            'Diferença (%)': (maisvol.values * 100)})
+        menosvol = pd.DataFrame({'Ticker': menosvol.index.str.replace('\.SA', ''), 
+                                            'Diferença (%)': (menosvol.values * 100)})
+
+        maisvol['Diferença (%)'] = maisvol['Diferença (%)'].apply(lambda x: '{:.2f}'.format(x))
+        menosvol['Diferença (%)'] = menosvol['Diferença (%)'].apply(lambda x: '{:.2f}'.format(x))
+
+        st.markdown("""
+        ##### 10 maiores altas de volatilidade
+        """)
+        st.markdown(maisvol.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+        st.markdown('---')
+        st.markdown("""
+        ##### 10 maiores quedas de volatilidade
+        """)    
+        st.markdown(menosvol.style.hide(axis="index").to_html(), unsafe_allow_html=True)
 
 
 elif selected_calculator == "Long Short - Teste seu Par":

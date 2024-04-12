@@ -17,6 +17,9 @@ import zipfile
 import io
 import fundamentus
 import riskfolio as rp
+from statsmodels.regression.linear_model import OLS
+from statsmodels.tsa.stattools import adfuller
+import statsmodels.api as sm
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
@@ -51,12 +54,13 @@ st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Selecione a ferramenta:",
-    ("Long Short - Cointegração", "PCR - Put Call Ratio", "BDR - Spreads", "Carteiras", "Seguro da Carteira", "Cones de Volatilidade", "Monitor de 5 Dias", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
+    ("Long Short - Cointegração", "Long Short - Teste seu Par", "PCR - Put Call Ratio", "BDR - Spreads", "Carteiras", "Seguro da Carteira", "Cones de Volatilidade", "Monitor de 5 Dias", "Calculadora de Gregas de Opções", "Calculadoras Black-Scholes-Merton", "Top 10 Fundos Quantitativos")
 )
 
 st.sidebar.markdown('---')
 st.sidebar.subheader('Ferramentas disponíveis')
 st.sidebar.write('Long Short - Cointegração')
+st.sidebar.write('Long Short - Teste seu Par')
 st.sidebar.write('PCR - Put Call Ratio')
 st.sidebar.write('BDR - Spreads')
 st.sidebar.write('Carteiras \n\n- Magic Formula de Joel Greenblatt \n\n- Risk Parity' )
@@ -905,3 +909,90 @@ elif selected_calculator == "Monitor de 5 Dias":
         })
 
         st.markdown(df_maiores_crescimentos_quedas.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+
+
+elif selected_calculator == "Long Short - Teste seu Par":
+    # Título do aplicativo
+    st.subheader('Long Short - Teste seu Par por Cointegração')
+    st.markdown("""
+        A cointegração é uma relação estatística entre duas séries temporais que indica que, 
+                mesmo que elas se movam independentemente no curto prazo, elas têm uma 
+                relação de longo prazo estável. A identificação de pares cointegrados passa principalmente
+                por testes e análises que compreendem manipulações de regressão linear simples, 
+                tendência e estacionariedade.  
+             """)
+    st.markdown('---')
+    #from ibov composition file
+    end = datetime.now()
+    start = end - timedelta(days = 200)
+
+    # Funções para realizar a regressão linear e retornar beta, p-valor do beta e residuos
+    def linear_regression(x, y):
+        x = sm.add_constant(x)
+        model = OLS(y, x).fit()
+        return round(model.params[0], 2)  # Retorna o coeficiente beta
+    
+    def linear_regressionp(x, y):
+        x = sm.add_constant(x)
+        model = OLS(y, x).fit()
+        return model.pvalues.iloc[0]  # Retorna o p-valor do coeficiente beta
+    
+    def linear_regressionr(x, y):
+        x = sm.add_constant(x)
+        model = OLS(y, x).fit()
+        return model.resid  # Retorna os residuos da regressao
+    # Entrada dos códigos das ações
+    col1, col2 = st.columns(2)
+
+    # Adicionar conteúdo em cada coluna
+    with col1:
+        stock_code1 = st.text_input('Digite o código da primeira ação (preferencialmente do Ibovespa):')
+
+    with col2:
+        stock_code2 = st.text_input('Digite o código da segunda ação (preferencialmente do Ibovespa):')
+
+    # Botão para enviar os códigos e realizar as análises
+    if st.button('Enviar'):
+        # Obtendo os dados históricos das ações 
+        stock_data1 = yf.download(stock_code1 + '.SA', start = start, end = end)["Adj Close"]
+        stock_data2 = yf.download(stock_code2 + '.SA', start = start, end = end)["Adj Close"]
+        residuos = linear_regressionr(stock_data2, stock_data1)
+        pbeta = linear_regressionp(stock_data2, stock_data1)
+
+        # Verificando se os dados são suficientes para análise
+        if len(stock_data1) < 2 or len(stock_data2) < 2:
+            st.error('Não há dados suficientes para análise.')
+        else:
+            # Realizando os testes de raiz unitária
+            unit_root_test_result1 = adfuller(stock_data1, autolag='AIC')[1] > 0.1
+            unit_root_test_result2 = adfuller(stock_data2, autolag='AIC')[1] > 0.1
+            unit_root_test_result3 = adfuller(residuos, autolag='AIC')[1] < 0.1
+            beta_test_result = pbeta < 0.1
+
+            # Realizando a regressão linear
+            beta = None
+            if unit_root_test_result1 and unit_root_test_result2 and unit_root_test_result3 and beta_test_result:
+                beta = linear_regression(stock_data1, stock_data2)
+
+            # Exibindo o resultado do beta, se disponível
+            if beta is not None:
+                st.write(f'O par é cointegrado e o coeficiente de cointegração é: {beta}')
+            else:
+                st.warning('O par não é cointegrado.')
+
+            # Plotando o gráfico das cotações das ações
+            fig, ax1 = plt.subplots()
+
+            color = 'tab:red'
+            ax1.set_xlabel('Data')
+            ax1.set_ylabel(f'Preço de {stock_code1}', color=color)
+            ax1.plot(stock_data1.index, stock_data1, color=color)
+            ax1.tick_params(axis='y', labelcolor=color)
+
+            ax2 = ax1.twinx()
+            color = 'tab:blue'
+            ax2.set_ylabel(f'Preço de {stock_code2}', color=color)
+            ax2.plot(stock_data2.index, stock_data2, color=color)
+            ax2.tick_params(axis='y', labelcolor=color)
+
+            st.pyplot(fig)

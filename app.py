@@ -833,7 +833,7 @@ elif selected_calculator == "Monitor de 5 Dias":
 
         df_maiores_retornos = pd.DataFrame({'Ticker': maiores_retornos.index.str.slice(stop=-3), 
                                             'Retorno (%)': (maiores_retornos.values * 100)})
-        df_menores_retornos = pd.DataFrame({'Ticker': menores_retornos.index.str.replace('\.SA', ''), 
+        df_menores_retornos = pd.DataFrame({'Ticker': menores_retornos.index.str.slice(stop=-3), 
                                             'Retorno (%)': (menores_retornos.values * 100)})
 
         df_maiores_retornos['Retorno (%)'] = df_maiores_retornos['Retorno (%)'].apply(lambda x: '{:.2f}'.format(x))
@@ -866,9 +866,9 @@ elif selected_calculator == "Monitor de 5 Dias":
         volume_cresce = var_percentual_5d_vol.nlargest(10)
         volume_cai = var_percentual_5d_vol.nsmallest(10)
 
-        df_maiores_altasvol = pd.DataFrame({'Ticker': volume_cresce.index.str.replace('\.SA', ''), 
+        df_maiores_altasvol = pd.DataFrame({'Ticker': volume_cresce.index.str.slice(stop=-3), 
                                             'Mudança (%)': (volume_cresce.values * 100)})
-        df_maiores_quedasvol = pd.DataFrame({'Ticker': volume_cai.index.str.replace('\.SA', ''), 
+        df_maiores_quedasvol = pd.DataFrame({'Ticker': volume_cai.index.str.slice(stop=-3), 
                                             'Mudança (%)': (volume_cai.values * 100)})
         
         df_maiores_altasvol['Mudança (%)'] = df_maiores_altasvol['Mudança (%)'].apply(lambda x: '{:.2f}'.format(x))
@@ -916,9 +916,9 @@ elif selected_calculator == "Monitor de 5 Dias":
         maisvol = mediasvol.nlargest(10)
         menosvol = mediasvol.nsmallest(10)
 
-        maisvol = pd.DataFrame({'Ticker': maisvol.index.str.replace('\.SA', ''), 
+        maisvol = pd.DataFrame({'Ticker': maisvol.index.str.slice(stop=-3), 
                                             'Diferença (%)': (maisvol.values * 100)})
-        menosvol = pd.DataFrame({'Ticker': menosvol.index.str.replace('\.SA', ''), 
+        menosvol = pd.DataFrame({'Ticker': menosvol.index.str.slice(stop=-3), 
                                             'Diferença (%)': (menosvol.values * 100)})
 
         maisvol['Diferença (%)'] = maisvol['Diferença (%)'].apply(lambda x: '{:.2f}'.format(x))

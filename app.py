@@ -831,7 +831,7 @@ elif selected_calculator == "Monitor de 5 Dias":
         maiores_retornos = var_percentual_5d.nlargest(10)
         menores_retornos = var_percentual_5d.nsmallest(10)
 
-        df_maiores_retornos = pd.DataFrame({'Ticker': maiores_retornos.index.str.replace('\.SA', ''), 
+        df_maiores_retornos = pd.DataFrame({'Ticker': maiores_retornos.index.str.slice(stop=-3), 
                                             'Retorno (%)': (maiores_retornos.values * 100)})
         df_menores_retornos = pd.DataFrame({'Ticker': menores_retornos.index.str.replace('\.SA', ''), 
                                             'Retorno (%)': (menores_retornos.values * 100)})

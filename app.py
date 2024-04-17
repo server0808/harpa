@@ -46,8 +46,7 @@ with col5:
 st.markdown('---')
 
 st.sidebar.markdown("""
-    Acesse nossa [Comunidade no Discord](https://discord.gg/MaF7wZDQvZ) para participar de 
-                    discussões no tema. Contato: harpaquant@gmail.com
+    Contato: harpaquant@gmail.com
     """)
 
 st.sidebar.markdown('---')

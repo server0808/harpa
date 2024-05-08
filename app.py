@@ -21,8 +21,8 @@ from statsmodels.regression.linear_model import OLS
 from statsmodels.tsa.stattools import adfuller
 import statsmodels.api as sm
 
-if st.button('Clique aqui para ir para o Harpa Pro'):
-    st.markdown('[Harpa Pro](https://harpapro.streamlit.app)')
+st.markdown('<a href="https://harpapro.streamlit.app" target="_blank"><button> Clique aqui para ir para o Harpa Pro</button></a>', unsafe_allow_html=True)
+
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
 st.markdown("""Escolha à esquerda a ferramenta (no celular, setinha bem em cima à esquerda).""")

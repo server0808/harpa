@@ -25,7 +25,7 @@ st.markdown('<a href="https://harpapro.streamlit.app" target="_blank"><button> C
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
-st.markdown("""Escolha à esquerda a ferramenta (no celular, setinha bem em cima à esquerda).""")
+st.markdown("""Escolha à esquerda a ferramenta do plano gratuito (no celular, setinha bem em cima à esquerda).""")
 
 col1, col2, col3, col4, col5 = st.columns(5)
 
@@ -54,7 +54,7 @@ st.sidebar.markdown("""
 st.sidebar.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
-    "Selecione a ferramenta:",
+    "Ferramentas gratuitas:",
     ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos")
 )
 

@@ -21,7 +21,7 @@ from statsmodels.regression.linear_model import OLS
 from statsmodels.tsa.stattools import adfuller
 import statsmodels.api as sm
 
-st.markdown('<a href="https://harpapro.streamlit.app" target="_blank"><button> Clique aqui para ir para o Harpa Pro</button></a>', unsafe_allow_html=True)
+st.markdown('<a href="https://harpapro.streamlit.app" target="_blank"><button> Clique aqui para ir para o ⭐Harpa Pro</button></a>', unsafe_allow_html=True)
 
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
@@ -47,19 +47,13 @@ with col5:
 
 st.markdown('---')
 
-st.sidebar.markdown("""
-    Contato: harpaquant@gmail.com
-    """)
-
-st.sidebar.markdown('---')
-
 selected_calculator = st.sidebar.selectbox(
     "Ferramentas gratuitas:",
     ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos")
 )
 
 st.sidebar.markdown('---')
-st.sidebar.subheader('Ferramentas no Harpa Pro')
+st.sidebar.subheader('Ferramentas no ⭐Harpa Pro')
 st.sidebar.write('Long Short - Cointegração')
 st.sidebar.write('Long Short - Teste seu Par')
 st.sidebar.write('PCR - Put Call Ratio')
@@ -68,6 +62,11 @@ st.sidebar.write('Carteiras \n\n- Magic Formula de Joel Greenblatt \n\n- Risk Pa
 st.sidebar.write('Seguro da Carteira')
 st.sidebar.write('Cones de Volatilidade')
 st.sidebar.write('Monitor de 5 Dias')
+st.sidebar.markdown('---')
+st.sidebar.markdown("""
+    Contato: harpaquant@gmail.com
+    """)
+
 
 ###########################
 ### BLACK-SCHOLES

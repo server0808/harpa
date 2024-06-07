@@ -296,7 +296,7 @@ elif selected_calculator == "Top 10 Fundos Quantitativos":
     # Calcular maiores altas apenas entre fundos selecionados
     retornos = fundos_selecionados.pivot(index='DT_COMPTC', columns='CNPJ_FUNDO', values='VL_QUOTA')
     retornos = (retornos / retornos.iloc[1] - 1) * 100
-    maiores_altas = retornos.iloc[-2].sort_values(ascending=False)
+    maiores_altas = retornos.iloc[-1].sort_values(ascending=False)
     # Selecionar as 10 maiores altas
     top_10_altas = maiores_altas.head(10)
     # Exibir as 10 maiores altas

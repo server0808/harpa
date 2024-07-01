@@ -16,7 +16,6 @@ import requests
 import zipfile
 import io
 import fundamentus
-import riskfolio as rp
 from statsmodels.regression.linear_model import OLS
 from statsmodels.tsa.stattools import adfuller
 import statsmodels.api as sm

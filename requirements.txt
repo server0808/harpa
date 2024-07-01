@@ -9,6 +9,6 @@ scipy
 openpyxl
 requests
 seaborn
-fundamentus
 riskfolio-lib
 statsmodels
+fundamentus

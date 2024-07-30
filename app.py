@@ -20,6 +20,9 @@ from statsmodels.regression.linear_model import OLS
 from statsmodels.tsa.stattools import adfuller
 import statsmodels.api as sm
 
+# Configuração da página
+st.set_page_config(page_title='Harpa Quant')
+
 st.markdown('<a href="https://harpapro.streamlit.app" target="_blank"><button> Clique aqui para ir para o ⭐Harpa Quant Pro</button></a>', unsafe_allow_html=True)
 
 st.title("Harpa Quant")

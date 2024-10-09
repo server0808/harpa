@@ -53,15 +53,6 @@ selected_calculator = st.sidebar.selectbox(
 )
 
 st.sidebar.markdown('---')
-st.sidebar.subheader('Ferramentas adicionais')
-st.sidebar.write('Long Short - Cointegração')
-st.sidebar.write('Long Short - Teste seu Par')
-st.sidebar.write('PCR - Put Call Ratio')
-st.sidebar.write('Carteira Magic Formula de Joel Greenblatt')
-st.sidebar.write('Seguro da Carteira')
-st.sidebar.write('Cones de Volatilidade')
-st.sidebar.write('Monitor de 5 Dias')
-st.sidebar.markdown('---')
 st.sidebar.markdown("""
     Contato: harpaquant@gmail.com
     """)

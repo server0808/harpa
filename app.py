@@ -50,7 +50,7 @@ st.markdown('---')
 st.sidebar.markdown('---')
 selected_calculator = st.sidebar.selectbox(
     "Ferramentas:",
-    ("Long Short - Teste seu Par","Long Short - Cointegração", "Calculadoras Black-Scholes-Merton", "Long Short - Cointegração", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade", "Carteira Magic Formula","PCR - Put Call Ratio", "Seguro da Carteira", "Monitor de 5 Dias")
+    ("Long Short - Teste seu Par", "Long Short - Cointegração", "Carteira Magic Formula", "Monitor de 5 Dias", "Top 10 Fundos Quantitativos", "Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Cones de Volatilidade", "PCR - Put Call Ratio", "Seguro da Carteira")
 )
 
 st.sidebar.markdown('---')

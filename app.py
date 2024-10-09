@@ -48,7 +48,7 @@ with col5:
 st.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
-    "Ferramentas gratuitas:",
+    "Ferramentas:",
     ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos")
 )
 

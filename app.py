@@ -49,7 +49,7 @@ st.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Ferramentas:",
-    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade")
+    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade", "Carteira Magic Formula")
 )
 
 st.sidebar.markdown('---')
@@ -304,7 +304,7 @@ elif selected_calculator == "Top 10 Fundos Quantitativos":
 
     st.dataframe(top_10_df)
 
-if selected_calculator == "Cones de Volatilidade":
+elif selected_calculator == "Cones de Volatilidade":
     # Cones de volatilidade para diferentes ativos
     st.subheader('Cones de Volatilidade')
     st.markdown("""
@@ -371,3 +371,134 @@ if selected_calculator == "Cones de Volatilidade":
     # Criar o gráfico
     fig = go.Figure(data=data, layout=layout)
     st.plotly_chart(fig)
+
+elif selected_calculator == "Carteiras":
+    # Título do aplicativo
+    st.subheader('Carteiras')
+    st.markdown("""
+        O Factor Investing é uma estratégia que busca capturar retornos excedentes ao mirar 
+                em fatores específicos, como valor, momento, tamanho, qualidade, baixa 
+                volatilidade, aderência a padrões esperados em ESG e outras características 
+                dentro de uma carteira diversificada. Compreender esses fatores e suas 
+                interações é crucial para decisões de investimento. 
+        """)
+    st.markdown("""
+        A carteira por risk parity é uma estratégia de alocação de ativos que busca 
+                equalizar o risco de cada componente da carteira. Isso significa que, 
+                em uma carteira por risk parity, cada ativo contribui de forma igual 
+                para a volatilidade total da carteira. Essa equalização do risco pode 
+                ser alcançada através da atribuição de pesos diferentes para cada ativo, 
+                levando em consideração suas correlações e volatilidades históricas. 
+        """)
+    st.markdown('---')
+
+    # Abrir colunas para selecionar as carteiras em radio
+    acaocarteiras = st.radio('Escolha a carteira por critério', ['Magic Formula de Joel Greenblatt', "Risk Parity"])
+
+    if acaocarteiras == 'Magic Formula de Joel Greenblatt':
+        # Codigo MF
+        dfraw = fundamentus.get_resultado_raw()
+        df = fundamentus.get_resultado()
+        # Primeiros filtros
+        df2 = df[df.pl > 0]
+        df3 = df2[df2.evebit > 0]
+        df4 = df3[df3.roic > 0]
+        df5 = df4[df4.patrliq > 100000000]
+        stocks_df = df5[df5.liq2m > 0]
+        stocks_df = stocks_df[['evebit', 'roic']]
+        # Trabalhando apenas com dy e roic
+        data = {'Stock': stocks_df.index,
+                'Earnings_Yield': stocks_df['evebit'],
+                'ROIC': stocks_df['roic']}
+        stocks_df = pd.DataFrame(data)
+        # Ordenando dy e roic
+        stocks_df['Earnings_Yield_Rank'] = stocks_df['Earnings_Yield'].rank(ascending=True)
+        stocks_df['ROIC_Rank'] = stocks_df['ROIC'].rank(ascending=False)
+        # Calculando a magic formula
+        stocks_df['Magic_Formula_Rank'] = stocks_df['Earnings_Yield_Rank'] + stocks_df['ROIC_Rank']
+        # Ordenando pela magic formula
+        sorted_stocks = stocks_df.sort_values('Magic_Formula_Rank')
+        # Visualizando
+        ativos = sorted_stocks.head(30)
+        # Removendo baixa liquidez
+        codigos_a_remover = ['CEDO4', 'RSUL4', 'CEDO3', 'CAMB3', 'PETR3', 'DEXP3', 'MRSA6B']
+        ativos = ativos.drop(codigos_a_remover, axis=0)
+        carteiramf = ativos.head(10)
+        colunas_para_remover = ['Earnings_Yield_Rank', 'ROIC_Rank', 'Magic_Formula_Rank']
+        carteiramf = carteiramf.drop(columns=colunas_para_remover)
+        del carteiramf['Stock']
+        novos_nomes_colunas = {'Earnings_Yield': 'Earnings Yield', 'ROIC': 'ROIC'}
+        carteiramf = carteiramf.rename(columns=novos_nomes_colunas)
+        carteiramf = carteiramf.rename_axis('Código', axis='index')
+        st.markdown('---')
+        st.markdown("""
+            A estratégia Magic Formula de investimento, popularizada por Joel Greenblatt, 
+                    busca empresas com baixa avaliação e alta rentabilidade. Baseia-se 
+                    em dois critérios: retorno sobre o capital e múltiplo preço/lucro. 
+                    Investidores usam essa fórmula para encontrar ações com potencial 
+                    de longo prazo. Na seleção abaixo, nossa adaptação prevê pesos iguais
+                    na carteira, ou seja, 10% em cada ação.  
+            """)
+        st.dataframe(carteiramf)
+
+    if acaocarteiras == 'Risk Parity':
+        st.markdown('---')
+        st.markdown("""
+        Risk Parity é uma abordagem de alocação de ativos que equilibra os riscos entre 
+                    diferentes classes de ativos. Diferente da tradicional alocação 
+                    baseada em pesos, o Risk Parity considera a volatilidade e a correlação
+                    como drivers preponderantes. Isso pode ajudar a diversificar o 
+                    risco e potencialmente melhorar os retornos da carteira. 
+        """)
+        # Lista das ações
+        assets = [
+            "ABEV3.SA", "ALPA4.SA", "ASAI3.SA", "AZUL4.SA", "B3SA3.SA", "BBAS3.SA", 
+            "BBDC3.SA", "BBDC4.SA", "BBSE3.SA", "BEEF3.SA", "BPAC11.SA", "BRAP4.SA", "BRFS3.SA", "BRKM5.SA", 
+            "CASH3.SA", "CCRO3.SA", "CIEL3.SA", "CMIG4.SA", "CMIN3.SA", "COGN3.SA", "CPFE3.SA", "CPLE6.SA", 
+            "CRFB3.SA", "CSAN3.SA", "CSNA3.SA", "CVCB3.SA", "CYRE3.SA", "DXCO3.SA", "EGIE3.SA", "ELET3.SA", 
+            "ELET6.SA", "EMBR3.SA", "ENEV3.SA", "ENGI11.SA", "EQTL3.SA", "EZTC3.SA", "FLRY3.SA", 
+            "GGBR4.SA", "GOAU4.SA", "GOLL4.SA", "HAPV3.SA", "HYPE3.SA", "IGTI11.SA", "IRBR3.SA", "ITSA4.SA", 
+            "ITUB4.SA", "JBSS3.SA", "KLBN11.SA", "LREN3.SA", "LWSA3.SA", "MGLU3.SA", "MRFG3.SA", "MRVE3.SA", 
+            "MULT3.SA", "NTCO3.SA", "PCAR3.SA", "PETR4.SA", "PETZ3.SA", "PRIO3.SA", "RADL3.SA", 
+            "RAIL3.SA", "RAIZ4.SA", "RDOR3.SA", "RENT3.SA", "RRRP3.SA", "SANB11.SA", "SBSP3.SA", "SLCE3.SA", 
+            "SMTO3.SA", "SUZB3.SA", "TAEE11.SA", "TIMS3.SA", "TOTS3.SA", "UGPA3.SA", "USIM5.SA", 
+            "VALE3.SA", "VBBR3.SA", "BHIA3.SA", "VIVT3.SA", "WEGE3.SA", "YDUQ3.SA"
+        ]
+
+        #download data
+        end = datetime.now()
+        start = end - timedelta(days = 180)
+        data = yf.download(assets, start=start, end=end, progress=False)
+        # compute non-compounding, daily returns
+        returns = data['Adj Close'].pct_change().dropna()
+
+        # Portfolio with equal risk contribution weights
+        port = rp.Portfolio(returns=returns)
+        port.assets_stats(method_mu='hist', method_cov='hist', d=0.94)
+        w_rp = port.rp_optimization(
+            model="Classic",  # use historical
+            rm="MV",  # use mean-variance optimization
+            hist=True,  # use historical scenarios
+            rf=0,  # set risk free rate to 0
+            b=None  # don't use constraints
+        )
+
+        # Portfolio with minimum return constraint
+        port.lowerret = 0.0019
+        # estimate the optimal portfolio with risk parity with the constraint
+        w_rp_c = port.rp_optimization(
+            model="Classic",  # use historical
+            rm="MV",  # use mean-variance optimization
+            hist=True,  # use historical scenarios
+            rf=0,  # set risk free rate to 0
+            b=None  # don't use constraints
+        )
+
+        dfrp_ordenado = w_rp_c.sort_values(by='weights', ascending=False)
+        dfrp = dfrp_ordenado.head(10)
+        dfrp.index = dfrp.index.astype(str).str.replace('.SA', '')
+        total = dfrp['weights'].sum()
+        dfrp['Pesos (%)'] = round((dfrp['weights'] / total) * 100,2)
+        dfrp = dfrp.drop(columns=['weights'])
+        dfrp = dfrp.rename_axis('Código', axis='index')
+        st.dataframe(dfrp)

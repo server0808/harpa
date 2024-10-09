@@ -47,6 +47,7 @@ with col5:
 
 st.markdown('---')
 
+st.sidebar.markdown('---')
 selected_calculator = st.sidebar.selectbox(
     "Ferramentas:",
     ("Long Short - Teste seu Par","Long Short - Cointegração", "Calculadoras Black-Scholes-Merton", "Long Short - Cointegração", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade", "Carteira Magic Formula","PCR - Put Call Ratio", "Seguro da Carteira", "Monitor de 5 Dias")

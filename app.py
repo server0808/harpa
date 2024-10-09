@@ -49,7 +49,7 @@ st.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Ferramentas:",
-    ("Long Short - Teste seu Par","Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade", "Carteira Magic Formula","PCR - Put Call Ratio", "Seguro da Carteira")
+    ("Long Short - Teste seu Par","Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade", "Carteira Magic Formula","PCR - Put Call Ratio", "Seguro da Carteira", "Monitor de 5 Dias")
 )
 
 st.sidebar.markdown('---')
@@ -638,3 +638,163 @@ elif selected_calculator == "Long Short - Teste seu Par":
             ax2.tick_params(axis='y', labelcolor=color)
 
             st.pyplot(fig)
+
+################################
+### Monitor de 5 Dias
+    
+elif selected_calculator == "Monitor de 5 Dias":
+    # Título do aplicativo
+    st.subheader('Monitor de 5 Dias')
+    st.markdown("""
+        Visão do mercado de ações nos últimos 5 dias úteis. Esta ferramenta destaca as 10 ações 
+                que mais subiram e mais caíram em valor, permitindo identificação das tendências 
+                de mercado. Além disso, fornece informações sobre as 10 ações com maior alta 
+                e maior baixa de volume médio de negociação, oferecendo insights sobre o 
+                interesse dos investidores em determinados ativos. Por fim, destaca as 10 ações com 
+                maior alta e maior baixa de volatilidade média, destacando os movimentos de preço 
+                mais significativos e potencialmente indicando oportunidades.
+                                                 
+        """)
+    
+    st.markdown('---')
+
+    # Datas
+    end = datetime.now()
+    start = end - timedelta(days=60)
+
+    # fetch
+    ativos = ["ABEV3.SA", "ALPA4.SA", "ARZZ3.SA", "ASAI3.SA", "AZUL4.SA", "B3SA3.SA", "BBAS3.SA", 
+            "BBDC3.SA", "BBDC4.SA", "BBSE3.SA", "BEEF3.SA", "BPAC11.SA", "BRAP4.SA", "BRFS3.SA", "BRKM5.SA", 
+            "CASH3.SA", "CCRO3.SA", "CIEL3.SA", "CMIG4.SA", "CMIN3.SA", "COGN3.SA", "CPFE3.SA", "CPLE6.SA", 
+            "CRFB3.SA", "CSAN3.SA", "CSNA3.SA", "CVCB3.SA", "CYRE3.SA", "DXCO3.SA", "EGIE3.SA", "ELET3.SA", 
+            "ELET6.SA", "EMBR3.SA", "ENEV3.SA", "ENGI11.SA", "EQTL3.SA", "EZTC3.SA", "FLRY3.SA", 
+            "GGBR4.SA", "GOAU4.SA", "GOLL4.SA", "HAPV3.SA", "HYPE3.SA", "IGTI11.SA", "IRBR3.SA", "ITSA4.SA", 
+            "ITUB4.SA", "JBSS3.SA", "KLBN11.SA", "LREN3.SA", "LWSA3.SA", "MGLU3.SA", "MRFG3.SA", "MRVE3.SA", 
+            "MULT3.SA", "NTCO3.SA", "PCAR3.SA", "PETR3.SA", "PETR4.SA", "PETZ3.SA", "PRIO3.SA", "RADL3.SA", 
+            "RAIL3.SA", "RAIZ4.SA", "RDOR3.SA", "RENT3.SA", "RRRP3.SA", "SANB11.SA", "SBSP3.SA", "SLCE3.SA", 
+            "SMTO3.SA", "SOMA3.SA", "SUZB3.SA", "TAEE11.SA", "TIMS3.SA", "TOTS3.SA", "UGPA3.SA", "USIM5.SA", 
+            "VALE3.SA", "VBBR3.SA", "BHIA3.SA", "VIVT3.SA", "WEGE3.SA", "YDUQ3.SA"]
+
+    acaocinco = st.radio('Escolha a tabela', ['Retornos nos últimos 5 dias úteis','Volumes nos últimos 5 dias úteis','Volatilidades nos últimos 5 dias úteis'])
+
+    if acaocinco == 'Retornos nos últimos 5 dias úteis':
+        st.markdown('---')
+        st.markdown("""
+        #### 10 ações que mais subiram e mais caíram nos últimos 5 dias úteis
+        """)
+        ## Retornos
+        cotas = yf.download(ativos, start=start, end=end, progress=False)["Adj Close"]
+
+        # Calcular os retornos percentuais diários
+        retornos_diarios = cotas.pct_change()
+
+        # Calcular a variação percentual nos últimos 5 dias úteis
+        var_percentual_5d = retornos_diarios.tail(5).mean()
+
+        # Identificar os 10 maiores e menores retornos
+        maiores_retornos = var_percentual_5d.nlargest(10)
+        menores_retornos = var_percentual_5d.nsmallest(10)
+
+        df_maiores_retornos = pd.DataFrame({'Ticker': maiores_retornos.index.str.slice(stop=-3), 
+                                            'Retorno (%)': (maiores_retornos.values * 100)})
+        df_menores_retornos = pd.DataFrame({'Ticker': menores_retornos.index.str.slice(stop=-3), 
+                                            'Retorno (%)': (menores_retornos.values * 100)})
+
+        df_maiores_retornos['Retorno (%)'] = df_maiores_retornos['Retorno (%)'].apply(lambda x: '{:.2f}'.format(x))
+        df_menores_retornos['Retorno (%)'] = df_menores_retornos['Retorno (%)'].apply(lambda x: '{:.2f}'.format(x))
+        st.markdown('---')
+        st.markdown("""
+        ##### 10 maiores altas de preço
+        """)
+        st.markdown(df_maiores_retornos.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+        st.markdown('---')
+        st.markdown("""
+        ##### 10 maiores quedas de preço
+        """)    
+        st.markdown(df_menores_retornos.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+
+
+    if acaocinco == 'Volumes nos últimos 5 dias úteis':
+        st.markdown('---')
+        st.markdown("""
+        #### 10 ações que mais tiveram alta e queda de volume negociado nos últimos 5 dias úteis
+        """)
+        ## Volume
+        volume = yf.download(ativos, start=start, end=end, progress=False)["Volume"]
+        # Calcular os retornos percentuais diários
+        mudanca_diaria_volume = volume.pct_change()
+        # Calcular a variação percentual média nos últimos 5 dias úteis
+        var_percentual_5d_vol = mudanca_diaria_volume.tail(5).mean()
+
+        # Identificar os 10 maiores e menores retornos
+        volume_cresce = var_percentual_5d_vol.nlargest(10)
+        volume_cai = var_percentual_5d_vol.nsmallest(10)
+
+        df_maiores_altasvol = pd.DataFrame({'Ticker': volume_cresce.index.str.slice(stop=-3), 
+                                            'Mudança (%)': (volume_cresce.values * 100)})
+        df_maiores_quedasvol = pd.DataFrame({'Ticker': volume_cai.index.str.slice(stop=-3), 
+                                            'Mudança (%)': (volume_cai.values * 100)})
+        
+        df_maiores_altasvol['Mudança (%)'] = df_maiores_altasvol['Mudança (%)'].apply(lambda x: '{:.2f}'.format(x))
+        df_maiores_quedasvol['Mudança (%)'] = df_maiores_quedasvol['Mudança (%)'].apply(lambda x: '{:.2f}'.format(x))
+
+        st.markdown('---')
+        st.markdown("""
+        ##### 10 maiores altas de volume
+        """)
+        st.markdown(df_maiores_altasvol.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+        st.markdown('---')
+        st.markdown("""
+        ##### 10 maiores quedas de volume
+        """)    
+        st.markdown(df_maiores_quedasvol.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+    
+
+    if acaocinco == 'Volatilidades nos últimos 5 dias úteis':
+        st.markdown('---')
+        st.markdown("""
+        #### 10 ações que mais tiveram variação de volatilidade nos últimos 5 dias úteis, para cima e para baixo
+        """)
+        st.markdown('---')
+
+        # Calcular a volatilidade diária em uma janela móvel dos últimos 22 dias úteis para cada ação
+        cotas = yf.download(ativos, start=start, end=end, progress=False)["Adj Close"]
+
+        # Calcular os retornos diários das ações
+        retornos_diarios = cotas.pct_change()
+
+        dp1 = retornos_diarios.tail(22).std()
+        dp1 = pd.DataFrame(dp1)
+        dp1 = dp1.T
+        retornos_diarios.drop(retornos_diarios.tail(1).index,inplace = True)
+
+        for i in range(4):
+            dpx = retornos_diarios.tail(22).std()
+            dpx = pd.DataFrame(dpx)
+            dpx = dpx.T
+            dp1 = pd.concat([dp1, dpx])
+            retornos_diarios.drop(retornos_diarios.tail(1).index,inplace = True)
+
+        diffvol = dp1.pct_change()
+        mediasvol = diffvol.mean()
+        maisvol = mediasvol.nlargest(10)
+        menosvol = mediasvol.nsmallest(10)
+
+        maisvol = pd.DataFrame({'Ticker': maisvol.index.str.slice(stop=-3), 
+                                            'Diferença (%)': (maisvol.values * 100)})
+        menosvol = pd.DataFrame({'Ticker': menosvol.index.str.slice(stop=-3), 
+                                            'Diferença (%)': (menosvol.values * 100)})
+
+        maisvol['Diferença (%)'] = maisvol['Diferença (%)'].apply(lambda x: '{:.2f}'.format(x))
+        menosvol['Diferença (%)'] = menosvol['Diferença (%)'].apply(lambda x: '{:.2f}'.format(x))
+
+        st.markdown("""
+        ##### 10 maiores altas de volatilidade
+        """)
+        st.markdown(maisvol.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+        st.markdown('---')
+        st.markdown("""
+        ##### 10 maiores quedas de volatilidade
+        """)    
+        st.markdown(menosvol.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+

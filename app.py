@@ -23,7 +23,7 @@ import statsmodels.api as sm
 # Configuração da página
 st.set_page_config(page_title='Harpa Quant')
 
-st.title("Harpa Quant")
+st.markdown('<span style="color:gold; font-size: 48px">&#9733;</span> <span style="font-size: 48px; font-weight: bold">Harpa Quant</span>', unsafe_allow_html=True)
 st.markdown("""##### Ferramentas quantitativas para finanças.""")
 st.markdown("""Escolha à esquerda a ferramenta (no celular, setinha bem em cima à esquerda).""")
 

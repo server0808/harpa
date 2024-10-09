@@ -49,7 +49,7 @@ st.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Ferramentas:",
-    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos")
+    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade")
 )
 
 st.sidebar.markdown('---')
@@ -312,3 +312,71 @@ elif selected_calculator == "Top 10 Fundos Quantitativos":
     top_10_df = top_10_df[['Denominação Social', 'Retorno (%)']]
 
     st.dataframe(top_10_df)
+
+if selected_calculator == "Cones de Volatilidade":
+    # Cones de volatilidade para diferentes ativos
+    st.subheader('Cones de Volatilidade')
+    st.markdown("""
+        A parte mais difícil da negociação de opções é determinar se elas estão baratas ou caras. 
+                Ao comprar ou vender uma opção, você está exposto à volatilidade do ativo subjacente. 
+                Por isso, é importante comparar a volatilidade aos seus níveis recentes. 
+                Os cones de volatilidade podem ajudar nessa análise. Veja abaixo gráficos do cone de
+                volatilidade para diferentes ativos subjacentes.
+        """)
+    st.markdown('---')
+    acaocone = st.radio('Escolha o ativo subjacente', ['ABEV3','BBDC4','BOVA11','PETR4','VALE3'])    
+    windows = [15, 30, 45, 60, 75, 90, 105, 120]
+    quantiles = [0.25, 0.75]
+    min_ = []
+    max_ = []
+    median = []
+    top_q = []
+    bottom_q = []
+    realized = []
+    start = "2006-01-02"
+    def realized_vol(price_data, window=30):
+        log_return = (price_data["Close"] / price_data["Close"].shift(1)).apply(np.log)
+        return log_return.rolling(window=window, center=False).std() * math.sqrt(252)
+
+    if acaocone == 'ABEV3':
+        data = yf.download('ABEV3.SA', start=start, progress=False)
+    if acaocone == 'BBDC4':
+        data = yf.download('BBDC4.SA', start=start, progress=False)
+    if acaocone == 'BOVA11':
+        data = yf.download('BOVA11.SA', start=start, progress=False)
+    if acaocone == 'PETR4':
+        data = yf.download('PETR4.SA', start=start, progress=False)
+    if acaocone == 'VALE3':
+        data = yf.download('VALE3.SA', start=start, progress=False)
+
+    for window in windows:
+        # get a dataframe with realized volatility
+        estimator = realized_vol(window=window, price_data=data)
+        # append the summary stats to a list
+        min_.append(estimator.min())
+        max_.append(estimator.max())
+        median.append(estimator.median())
+        top_q.append(estimator.quantile(quantiles[1]))
+        bottom_q.append(estimator.quantile(quantiles[0]))
+        realized.append(estimator.iloc[-1])
+    
+    data = [
+    go.Scatter(x=windows, y=min_, mode='markers+lines', name='Min'),
+    go.Scatter(x=windows, y=max_, mode='markers+lines', name='Max'),
+    go.Scatter(x=windows, y=median, mode='markers+lines', name='Mediana'),
+    go.Scatter(x=windows, y=top_q, mode='markers+lines', name=f'{quantiles[1] * 100:.0f} Percentil'),
+    go.Scatter(x=windows, y=bottom_q, mode='markers+lines', name=f'{quantiles[0] * 100:.0f} Percentil'),
+    go.Scatter(x=windows, y=realized, mode='markers+lines', name='Realizado', marker=dict(color='yellow'))
+    ]
+
+    # Criar o layout do gráfico
+    layout = go.Layout(
+        title=f'Cone de Volatilidade - {acaocone}',
+        xaxis=dict(title='Janelas'),
+        yaxis=dict(title='Valores'),
+        legend=dict(x=0.5, y=1.0, bgcolor='rgba(255, 255, 255, 0)', bordercolor='rgba(255, 255, 255, 0)')
+    )
+
+    # Criar o gráfico
+    fig = go.Figure(data=data, layout=layout)
+    st.plotly_chart(fig)

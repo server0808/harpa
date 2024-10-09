@@ -24,17 +24,17 @@ import statsmodels.api as sm
 st.set_page_config(page_title='Harpa Quant')
 
 st.title("Harpa Quant")
-st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
-st.markdown("""Escolha à esquerda a ferramenta do plano gratuito (no celular, setinha bem em cima à esquerda).""")
+st.markdown("""##### Ferramentas quantitativas para finanças.""")
+st.markdown("""Escolha à esquerda a ferramenta (no celular, setinha bem em cima à esquerda).""")
 
 col1, col2, col3, col4, col5 = st.columns(5)
 
 # Adicionar conteúdo em cada coluna
 with col1:
-    st.markdown("[![Twitter](https://img.shields.io/badge/Twitter-%231DA1F2.svg?style=for-the-badge&logo=Twitter&logoColor=white)](https://twitter.com/harpaquant)")
+    st.markdown("[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://www.instagram.com/harpaquant)")
 
 with col2:
-    st.markdown("[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://www.instagram.com/harpaquant)")
+    st.markdown("")
 
 with col3:
     st.markdown("")
@@ -53,11 +53,11 @@ selected_calculator = st.sidebar.selectbox(
 )
 
 st.sidebar.markdown('---')
-st.sidebar.subheader('Ferramentas no ⭐Harpa Quant Pro')
+st.sidebar.subheader('Ferramentas adicionais')
 st.sidebar.write('Long Short - Cointegração')
 st.sidebar.write('Long Short - Teste seu Par')
 st.sidebar.write('PCR - Put Call Ratio')
-st.sidebar.write('Carteiras \n\n- Magic Formula de Joel Greenblatt \n\n- Risk Parity' )
+st.sidebar.write('Carteira Magic Formula de Joel Greenblatt')
 st.sidebar.write('Seguro da Carteira')
 st.sidebar.write('Cones de Volatilidade')
 st.sidebar.write('Monitor de 5 Dias')

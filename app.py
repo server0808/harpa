@@ -49,7 +49,7 @@ st.markdown('---')
 
 selected_calculator = st.sidebar.selectbox(
     "Ferramentas:",
-    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade", "Carteira Magic Formula","PCR - Put Call Ratio")
+    ("Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Top 10 Fundos Quantitativos", "Cones de Volatilidade", "Carteira Magic Formula","PCR - Put Call Ratio", "Seguro da Carteira")
 )
 
 st.sidebar.markdown('---')
@@ -526,4 +526,29 @@ elif selected_calculator == "PCR - Put Call Ratio":
 
     with col5:
         st.metric('PCR VALE3', value=round(ultv_vale,2), delta=f'{round(deltav_vale,2)}%')
+
+### Seguro da Carteira
+    
+elif selected_calculator == "Seguro da Carteira":
+    # Título do aplicativo
+    st.subheader('Seguro da Carteira')
+    st.markdown("""
+        Proteger sua carteira contra disaster risk é essencial. A estratégia de compra de puts 
+                fora do dinheiro oferece uma camada de segurança adicional, minimizando exposições 
+                indesejadas e fortalecendo a resiliência de seus investimentos. Uma maneira de 
+                operacionalizar essa estratégia de proteção consiste em alocar um pequeno percentual 
+                da sua carteira em puts de BOVA11 bem fora do dinheiro. Abaixo, algumas candidatas
+                (tabela atualizada diariamente). 
+        """)
+    st.markdown('---')
+
+    ult_bova11_disaster = yf.download('BOVA11.SA', progress=False)['Close'].iloc[-1]
+    # Carregar a planilha
+    bova11_disaster = pd.read_excel('bova11_disaster.xlsx')
+    bova11_disaster['Fração do Spot'] = bova11_disaster['Strike'] / ult_bova11_disaster
+    bova11_disaster = bova11_disaster.drop(columns=['Subjacente', 'Tipo'])
+    bova11_disaster['Volume'] = bova11_disaster['Volume'].round(2)
+    bova11_disaster = bova11_disaster.round(2)
+    html = bova11_disaster.to_html(index=False)
+    st.write(html, unsafe_allow_html=True)
 

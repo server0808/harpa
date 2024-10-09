@@ -411,7 +411,6 @@ elif selected_calculator == "Carteira Magic Formula":
     novos_nomes_colunas = {'Earnings_Yield': 'Earnings Yield', 'ROIC': 'ROIC'}
     carteiramf = carteiramf.rename(columns=novos_nomes_colunas)
     carteiramf = carteiramf.rename_axis('Código', axis='index')
-    st.markdown('---')
     st.markdown("""
         A estratégia Magic Formula de investimento, popularizada por Joel Greenblatt, 
                 busca empresas com baixa avaliação e alta rentabilidade. Baseia-se 
@@ -420,5 +419,6 @@ elif selected_calculator == "Carteira Magic Formula":
                 de longo prazo. Na seleção abaixo, nossa adaptação prevê pesos iguais
                 na carteira, ou seja, 10% em cada ação.  
         """)
+    st.markdown('---')    
     st.dataframe(carteiramf)
 

@@ -23,8 +23,6 @@ import statsmodels.api as sm
 # Configuração da página
 st.set_page_config(page_title='Harpa Quant')
 
-st.markdown('<a href="https://harpapro.streamlit.app" target="_blank"><button> Clique aqui para ir para o ⭐Harpa Quant Pro</button></a>', unsafe_allow_html=True)
-
 st.title("Harpa Quant")
 st.markdown("""##### Ferramentas quantitativas para o investidor prospectivo.""")
 st.markdown("""Escolha à esquerda a ferramenta do plano gratuito (no celular, setinha bem em cima à esquerda).""")

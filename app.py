@@ -48,7 +48,7 @@ with col5:
 st.markdown('---')
 
 st.sidebar.markdown('---')
-selected_calculator = st.sidebar.selectbox(
+selected_calculator = st.sidebar.radio(
     "Ferramentas:",
     ("Long Short - Teste seu Par", "Long Short - Cointegração", "Carteira Magic Formula", "Monitor de 5 Dias", "Top 10 Fundos Quantitativos", "Calculadoras Black-Scholes-Merton", "Calculadora de Gregas de Opções", "Cones de Volatilidade", "PCR - Put Call Ratio", "Seguro da Carteira")
 )
